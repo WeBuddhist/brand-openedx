@@ -14,9 +14,15 @@
 
 @import "./overrides";
 
+// ============================================================================
+// 2. Studio header
+// ============================================================================
+// Shared with the studio-extension MFE.
+
+@import "./common/studio-header";
 
 // ============================================================================
-// 2. Course outline status bar
+// 3. Course outline status bar
 // ============================================================================
 
 // Studio course outline status bar (Start date, Pacing, Checklists, Highlight
@@ -1317,10 +1323,5 @@
 }
 
 
-// ============================================================================
-// 5. Studio header
-// ============================================================================
 
-// Shared with the studio-extension MFE.
-@import "./common/studio-header";
 
