@@ -2,3 +2,35 @@
 @use "./variables" as brand;
 @import "./overrides";
 @import "./common/studio-header";
+
+
+// ============================================================================
+// Course from a teaching recording (src/course-from-recording/)
+// ============================================================================
+
+.course-from-recording {
+    padding-top: brand.$spacing-8;
+    padding-bottom: brand.$spacing-12;
+}
+
+.course-from-recording__title {
+    margin-bottom: brand.$spacing-2;
+    color: brand.$color-espresso;
+    font-family: brand.$font-family-brand-ui;
+    font-size: brand.$font-size-h3;
+    font-weight: brand.$font-weight-semibold;
+    line-height: brand.$line-height-h3;
+}
+
+.course-from-recording__course {
+    margin-bottom: brand.$spacing-6;
+    color: brand.$text-color-muted;
+    font-family: brand.$font-family-brand-ui;
+    font-size: brand.$font-size-caption;
+}
+
+.course-from-recording__placeholder {
+    color: brand.$text-color-light;
+    font-family: brand.$font-family-brand-ui;
+    font-size: brand.$font-size-caption + 2;
+}
