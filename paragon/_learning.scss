@@ -502,7 +502,7 @@ h1, h2, h3, h4, h5, h6,
         }
     }
 
-    // "More" overflow dropdown tab: bottom orange bar matching other tabs.
+    // "More" overflow dropdown tab: same saffron underline as the other course tabs.
     .nav-underline-tabs > div.nav-item,
     .nav-underline-tabs > .nav-item:has(.dropdown) {
         position: relative !important;
@@ -533,24 +533,9 @@ h1, h2, h3, h4, h5, h6,
             text-decoration: none !important;
             box-shadow: none !important;
 
+            // Paragon's caret is hidden so no stray mark shows under the label.
             &::after {
-                content: "" !important;
-                display: inline-block !important;
-                position: relative !important;
-                top: -0.15rem !important;
-                left: auto !important;
-                right: auto !important;
-                bottom: auto !important;
-                width: 0.45rem !important;
-                height: 0.45rem !important;
-                margin-inline-start: 1.5ch !important;
-                margin-left: 1.5ch !important;
-                border: 0 !important;
-                border-style: solid !important;
-                border-width: 0.15rem 0.15rem 0 0 !important;
-                border-color: currentColor !important;
-                background: transparent !important;
-                transform: rotate(135deg) !important;
+                display: none !important;
             }
 
             &:hover,
@@ -1248,7 +1233,7 @@ body .pgn__checkpoint {
         }
     }
 
-    // Keeps the iframe 8px in from the card edge, as before the padding change.
+    // Pulls the iframe out past the card padding so it sits close to the card edge.
     @media (min-width: 830px) {
         .unit-iframe-wrapper {
             margin-right: -(brand.$spacing-6);
