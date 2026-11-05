@@ -796,6 +796,10 @@ $ds-report-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     outline-color: brand.$color-dusk !important;
 }
 
+#main .text-staff-color {
+    color: brand.$color-deep-saffron !important;
+}
+
 // Default profile photos stay in the markup. This paints the nav person icon over them.
 // Uploaded photos use a different address, so they are left as they are.
 #main img.pgn__avatar[src*="/profiles/default_"] {
@@ -2040,7 +2044,7 @@ body:has(#main .header-action-bar.border-bottom) {
 #main .align-items-center.overflow-auto .post-summary-timestamp,
 #main .comment-line,
 #main .discussion-comments .d-flex.flex-row.align-items-center > span.font-weight-500 {
-    color: brand.$color-clay !important;
+    color: brand.$color-deep-saffron !important;
 }
 
 #main .discussion-comments .d-flex.flex-row.align-items-center .pgn__icon {
