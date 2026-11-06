@@ -1,7 +1,2998 @@
-// Discussions MFE-specific overrides.
+// Discussions MFE. Everything uses a brand token, or a $ds- value when none fits.
 @use "./variables" as brand;
 @import "./overrides";
 
-main#main {
-  min-height: 100vh;
+// No brand token. Change the value here when one exists.
+$ds-font-size-ui: 14.5px;
+$ds-font-size-title: 15px;
+$ds-font-size-meta: 13.5px;
+$ds-font-size-time: 13px;
+$ds-font-size-status: 12.5px;
+$ds-line-height-title: 1.45;
+$ds-line-height-excerpt: 1.5;
+$ds-line-height-editor: 1.65;
+$ds-empty-title-size: 30px;
+$ds-empty-title-line-height: 1.2;
+$ds-empty-subtitle-line-height: 1.6;
+$ds-empty-icon-size: 76px;
+$ds-empty-stroke: 2.2;
+
+$ds-radius-control: brand.$border-radius-md;
+$ds-radius-panel: 14px;
+$ds-radius-badge: 6px;
+$ds-border-width: 1.5px;
+$ds-tab-underline: 2.5px;
+$ds-filter-size: 36px;
+$ds-focus-offset-tight: 2px;
+
+$ds-space-6: 6px;
+$ds-space-10: 10px;
+$ds-space-14: 14px;
+$ds-space-18: 18px;
+$ds-space-20: 20px;
+$ds-space-22: 22px;
+
+$ds-accent-hover: #D9762A;
+$ds-plus-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E");
+$ds-shadow-bar: 0 2px 6px rgba(brand.$color-espresso, 0.06);
+$ds-shadow-card: 0 2px 8px rgba(brand.$color-espresso, 0.06);
+$ds-shadow-card-hover: 0 4px 14px rgba(brand.$color-espresso, 0.08);
+
+// Same column as the site header. $nav-* come from _header.scss.
+// $force beats utility classes such as .px-4, which are !important.
+@mixin ds-shell($force: false) {
+    max-width: none;
+
+    @if $force {
+        padding-right: brand.$spacing-4 !important;
+        padding-left: brand.$spacing-4 !important;
+    } @else {
+        padding-right: brand.$spacing-4;
+        padding-left: brand.$spacing-4;
+    }
+
+    @media (min-width: #{$nav-collapse + 1px}) {
+        @if $force {
+            padding-right: brand.$spacing-6 !important;
+            padding-left: brand.$spacing-6 !important;
+        } @else {
+            padding-right: brand.$spacing-6;
+            padding-left: brand.$spacing-6;
+        }
+    }
+
+    @media (min-width: 1000px) {
+        @if $force {
+            padding-right: #{"max(#{$nav-gutter}, calc((100% - #{$nav-shell-md}) / 2))"} !important;
+            padding-left: #{"max(#{$nav-gutter}, calc((100% - #{$nav-shell-md}) / 2))"} !important;
+        } @else {
+            padding-right: #{"max(#{$nav-gutter}, calc((100% - #{$nav-shell-md}) / 2))"};
+            padding-left: #{"max(#{$nav-gutter}, calc((100% - #{$nav-shell-md}) / 2))"};
+        }
+    }
+
+    @media (min-width: 1600px) {
+        @if $force {
+            padding-right: #{"max(#{$nav-gutter}, calc((100% - #{$nav-shell-lg}) / 2))"} !important;
+            padding-left: #{"max(#{$nav-gutter}, calc((100% - #{$nav-shell-lg}) / 2))"} !important;
+        } @else {
+            padding-right: #{"max(#{$nav-gutter}, calc((100% - #{$nav-shell-lg}) / 2))"};
+            padding-left: #{"max(#{$nav-gutter}, calc((100% - #{$nav-shell-lg}) / 2))"};
+        }
+    }
+
+    @media (min-width: 2000px) {
+        @if $force {
+            padding-right: #{"max(#{$nav-gutter}, calc((100% - #{$nav-shell-xl}) / 2))"} !important;
+            padding-left: #{"max(#{$nav-gutter}, calc((100% - #{$nav-shell-xl}) / 2))"} !important;
+        } @else {
+            padding-right: #{"max(#{$nav-gutter}, calc((100% - #{$nav-shell-xl}) / 2))"};
+            padding-left: #{"max(#{$nav-gutter}, calc((100% - #{$nav-shell-xl}) / 2))"};
+        }
+    }
 }
+
+main#main {
+    min-height: 100vh;
+    background: brand.$color-white;
+    color: brand.$text-color;
+    font-family: brand.$font-family-brand-ui;
+}
+
+// Course tabs. Same treatment as learning: brown labels, saffron underline.
+// The id beats the discussions app's own tab rules, which load later.
+#root #courseTabsNavigation.course-tabs-navigation {
+    // Raised above the posts bar below so the More menu opens over it.
+    position: relative;
+    z-index: 20;
+    border-bottom: 1px solid brand.$border-color;
+    background: brand.$color-white;
+    font-size: $ds-font-size-ui !important;
+    @include ds-shell(true);
+
+    .nav-underline-tabs {
+        gap: brand.$spacing-1;
+        margin: 0;
+    }
+
+    .nav-underline-tabs .nav-link {
+        position: relative;
+        min-height: 0;
+        padding: brand.$spacing-4 14px 15px;
+        border: 0 !important;
+        border-radius: 0;
+        background: transparent !important;
+        color: brand.$text-color-primary !important;
+        font-family: brand.$font-family-brand-ui;
+        font-size: $ds-font-size-ui !important;
+        font-weight: brand.$font-weight-medium !important;
+        line-height: brand.$line-height-caption;
+
+        &::after {
+            content: "";
+            position: absolute;
+            right: 14px;
+            bottom: 0;
+            left: 14px;
+            height: $ds-tab-underline;
+            border: 0 !important;
+            border-radius: 2px;
+            background: brand.$accent;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.18s ease-out;
+        }
+
+        &:hover,
+        &:focus,
+        &:focus-visible,
+        &.active,
+        &[aria-expanded="true"] {
+            background: transparent !important;
+            color: brand.$text-color !important;
+            border-bottom-color: transparent !important;
+            text-decoration: none !important;
+
+            &::after {
+                transform: scaleX(1);
+            }
+        }
+
+        &.active {
+            font-weight: brand.$font-weight-semibold !important;
+        }
+    }
+
+    // "More" overflow dropdown tab: same saffron underline as the other course tabs.
+    .nav-underline-tabs > div.nav-item,
+    .nav-underline-tabs > .nav-item:has(.dropdown) {
+        position: relative !important;
+        display: flex !important;
+        align-items: stretch !important;
+        height: 100% !important;
+
+        .dropdown {
+            display: flex !important;
+            align-items: stretch !important;
+            height: 100% !important;
+        }
+
+        .dropdown-toggle.nav-link {
+            position: relative !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            min-height: 0 !important;
+            padding: brand.$spacing-4 14px 15px !important;
+            border: 0 !important;
+            outline: none !important;
+            background: transparent !important;
+            color: brand.$text-color-primary !important;
+            font-family: brand.$font-family-brand-ui !important;
+            font-size: $ds-font-size-ui !important;
+            font-weight: brand.$font-weight-medium !important;
+            line-height: brand.$line-height-caption !important;
+            text-decoration: none !important;
+            box-shadow: none !important;
+
+            // Paragon's caret is hidden so no stray mark shows under the label.
+            &::after {
+                display: none !important;
+            }
+
+            &:hover,
+            &:focus,
+            &:focus-visible,
+            &[aria-expanded="true"] {
+                color: brand.$text-color !important;
+                text-decoration: none !important;
+                outline: none !important;
+                border: 0 !important;
+                background: transparent !important;
+            }
+
+            &[aria-expanded="true"] {
+                font-weight: brand.$font-weight-semibold !important;
+            }
+        }
+
+        // Orange bottom bar: sits at the bottom of the tabs bar.
+        &::after {
+            content: "" !important;
+            position: absolute !important;
+            right: 14px !important;
+            bottom: 0 !important;
+            left: 14px !important;
+            height: $ds-tab-underline !important;
+            border: 0 !important;
+            border-radius: 2px !important;
+            background: brand.$accent !important;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.18s ease-out;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        &:hover::after,
+        &:focus-within::after,
+        &:has([aria-expanded="true"])::after {
+            transform: scaleX(1) !important;
+        }
+    }
+
+    .dropdown-menu {
+        min-width: 180px;
+        margin-top: 2px;
+        padding: brand.$spacing-2;
+        border: 1px solid brand.$border-color;
+        border-radius: brand.$border-radius-md;
+        background: brand.$color-white;
+        box-shadow: $ds-shadow-card;
+
+        .dropdown-item {
+            padding: brand.$spacing-2 brand.$spacing-4;
+            color: brand.$text-color-primary;
+            font-size: $ds-font-size-ui;
+            border-radius: brand.$border-radius-sm;
+
+            &:hover,
+            &:focus {
+                background: brand.$color-parchment;
+                color: brand.$text-color;
+            }
+        }
+    }
+}
+
+// The app sets the header wrapper to z-index 4, which caps the account menu
+// below this page's bars. Learning keeps its own stacking.
+body:has(#main .header-action-bar) .learning-header {
+    z-index: 100 !important;
+}
+
+// My posts / All posts / Topics / Learners, search, and Add a post.
+// The unit sidebar adds .border-bottom to this bar; leave that embed alone.
+#main .header-action-bar:not(.border-bottom) {
+    z-index: 10 !important;
+    border-bottom: 1px solid brand.$border-color;
+    background: brand.$color-white;
+    box-shadow: $ds-shadow-bar;
+
+    > .navbar {
+        position: static;
+        align-items: stretch;
+        gap: brand.$spacing-3;
+        padding-top: brand.$spacing-2;
+        padding-bottom: brand.$spacing-2;
+        @include ds-shell(true);
+
+        > :not(.nav-button-group) {
+            align-self: center;
+        }
+    }
+
+    .nav-button-group {
+        padding: 0 !important;
+        align-items: stretch !important;
+        align-self: stretch;
+
+        &.py-2 {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: stretch;
+            align-self: stretch;
+        }
+
+        .nav-link {
+            display: flex;
+            flex: 1 1 auto;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 36px;
+            height: 100%;
+            margin-left: -1px;
+            padding: $ds-space-10 $ds-space-20;
+            white-space: nowrap;
+            border: 1px solid brand.$border-color !important;
+            border-radius: 0 !important;
+            background: brand.$color-white !important;
+            color: brand.$text-color-primary !important;
+            font-family: brand.$font-family-brand-ui;
+            font-size: brand.$font-size-label !important;
+            font-weight: brand.$font-weight-medium !important;
+            line-height: $ds-line-height-title;
+
+            &:hover {
+                background: brand.$color-parchment !important;
+                color: brand.$text-color !important;
+            }
+
+            &.active {
+                position: relative;
+                z-index: 1;
+                background: brand.$primary !important;
+                border-color: brand.$primary !important;
+                border-right: 1px solid brand.$primary !important;
+                color: brand.$color-white !important;
+                font-weight: brand.$font-weight-semibold !important;
+            }
+
+            &:focus-visible {
+                z-index: 2;
+                outline: brand.$focus-ring-width solid brand.$color-espresso !important;
+                outline-offset: $ds-focus-offset-tight;
+            }
+        }
+
+        .nav-item:first-child .nav-link {
+            margin-left: 0;
+            border-radius: $ds-radius-control 0 0 $ds-radius-control !important;
+        }
+
+        .nav-item:last-child .nav-link {
+            border-radius: 0 $ds-radius-control $ds-radius-control 0 !important;
+        }
+    }
+
+    .pgn__searchfield {
+        flex: 0 1 320px;
+        align-items: stretch;
+        min-width: 0;
+        overflow: hidden;
+        border: $ds-border-width solid brand.$border-color;
+        border-radius: $ds-radius-control;
+        background: brand.$color-white;
+
+        .pgn__searchfield-form,
+        .pgn__searchfield_wrapper {
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .form-control {
+            min-height: 36px;
+            border: 0 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            color: brand.$text-color;
+            font-size: 13.5px !important;
+            background: transparent;
+
+            &::placeholder {
+                color: brand.$text-color-muted;
+            }
+        }
+
+        [data-testid="search-icon"] {
+            color: brand.$text-color-muted;
+        }
+
+        &:hover {
+            border-color: brand.$color-bark;
+        }
+
+        &.has-focus,
+        &:focus-within {
+            border-color: brand.$color-deep-saffron;
+            box-shadow: 0 0 0 brand.$focus-ring-width rgba(brand.$color-saffron, 0.2);
+
+            &::after,
+            .pgn__searchfield_wrapper::after {
+                content: none;
+            }
+        }
+    }
+
+    .btn-brand {
+        min-height: 36px;
+        padding: $ds-space-6 $ds-space-18 !important;
+        border-radius: $ds-radius-control !important;
+        font-size: 13.5px !important;
+        white-space: nowrap !important;
+        flex-shrink: 0;
+
+        &:hover:not(:disabled):not(.disabled) {
+            background: $ds-accent-hover !important;
+        }
+
+        &:focus-visible {
+            outline: brand.$focus-ring-width solid brand.$color-espresso !important;
+            outline-offset: $ds-focus-offset-tight;
+        }
+    }
+}
+
+// The "+" in front of the Add a post words. The message stays plain text, so the
+// plus is drawn here in the button's own text color. The unit sidebar keeps its
+// plus icon button and is not matched.
+@mixin ds-add-post-plus {
+    &::before {
+        content: "";
+        display: inline-block;
+        width: 0.875rem;
+        height: 0.875rem;
+        margin-right: 0.375rem;
+        vertical-align: -0.125rem;
+        background-color: currentColor;
+        -webkit-mask: $ds-plus-icon center / contain no-repeat;
+        mask: $ds-plus-icon center / contain no-repeat;
+    }
+}
+
+#main .header-action-bar:not(.border-bottom) .btn-brand {
+    @include ds-add-post-plus;
+}
+
+#main .min-content-height:has(.ds-empty-ico) .btn-brand {
+    @include ds-add-post-plus;
+}
+
+// One bottom edge under the list column and the pane beside it.
+// The unit sidebar keeps its bar: only that embed puts .border-bottom on the action bar.
+#main:not(:has(.header-action-bar.border-bottom)) {
+    > .d-flex.flex-row.position-relative,
+    .d-flex.flex-row.position-relative:has([data-testid="sidebar"]) {
+        align-items: stretch;
+        padding-top: brand.$spacing-6 !important;
+        padding-bottom: brand.$spacing-6 !important;
+        @include ds-shell(true);
+    }
+
+    // When post-form is open inside the outer wrapper, ensure content fills the whole outer wrapper space:
+    .d-flex.flex-row.position-relative > .align-items-center.overflow-auto:has(.post-form),
+    .align-items-center.overflow-auto:has(.post-form) {
+        display: flex !important;
+        flex-direction: column !important;
+        background: brand.$color-white !important;
+        background-color: brand.$color-white !important;
+
+        > .d-flex.flex-column.w-100 {
+            flex: 1 1 auto !important;
+            display: flex !important;
+            flex-direction: column !important;
+            min-height: 100% !important;
+            background: brand.$color-white !important;
+            background-color: brand.$color-white !important;
+        }
+    }
+
+    [data-testid="sidebar"] {
+        border: 1px solid brand.$border-color;
+        border-radius: brand.$border-radius-md 0 0 brand.$border-radius-md;
+        background: brand.$color-white;
+        box-shadow: none !important;
+    }
+
+    .d-flex.flex-row.position-relative > .align-items-center.overflow-auto {
+        border-top: 1px solid brand.$border-color;
+        border-right: 1px solid brand.$border-color;
+        border-bottom: 1px solid brand.$border-color;
+        border-radius: 0 brand.$border-radius-md brand.$border-radius-md 0;
+        background-color: brand.$color-parchment !important;
+    }
+
+    .d-flex.flex-row.position-relative > .align-items-center.overflow-auto,
+    .post-card-comment.overflow-auto {
+        overflow: visible !important;
+    }
+}
+
+// The status sentence and sort icon stay. The options under them are pills.
+#main .filter-bar {
+    display: flex;
+    flex-direction: column;
+
+    .collapsible-trigger {
+        position: relative;
+        display: flex;
+        align-self: stretch;
+        align-items: center;
+        justify-content: space-between;
+        gap: brand.$spacing-3;
+        min-height: $ds-filter-size;
+        margin: brand.$spacing-2 $ds-space-20;
+        padding: 0;
+        border-radius: brand.$border-radius-md;
+        background: transparent;
+        color: brand.$text-color-primary;
+        text-align: left;
+
+        // Tune stays in the markup. This paints the site-preferences slider over it.
+        // The icon is inline, so it sat on the text baseline. Center the box instead.
+        $ds-sort-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6h10M18 6h2M4 12h4M12 12h8M4 18h10M18 18h2'/%3E%3Ccircle cx='16' cy='6' r='2'/%3E%3Ccircle cx='10' cy='12' r='2'/%3E%3Ccircle cx='16' cy='18' r='2'/%3E%3C/svg%3E");
+
+        > span:last-child,
+        .pgn__icon {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 24px !important;
+            height: 24px !important;
+            line-height: 0 !important;
+        }
+
+        svg {
+            display: block !important;
+            width: 24px !important;
+            height: 24px !important;
+            margin: 0 !important;
+            background-color: brand.$color-deep-saffron;
+            -webkit-mask: $ds-sort-icon center / contain no-repeat;
+            mask: $ds-sort-icon center / contain no-repeat;
+
+            path {
+                opacity: 0;
+            }
+        }
+
+        &:hover,
+        &[aria-expanded="true"] {
+            background: transparent;
+            color: brand.$text-color-primary;
+        }
+
+        &:focus-visible {
+            outline: brand.$focus-ring-width solid brand.$color-espresso;
+            outline-offset: $ds-focus-offset-tight;
+        }
+    }
+
+    // The line belongs to the options block, so it is as wide as the columns
+    // and stays straight. The closed row already has its own bottom border.
+    &.is-open .collapsible-trigger {
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-top: brand.$spacing-4;
+        padding-bottom: brand.$spacing-4;
+        border-bottom: 0 !important;
+        border-radius: 0;
+    }
+
+    .collapsible-body {
+        align-self: stretch;
+        margin: 0 $ds-space-20;
+        padding: 0 !important;
+        border: 0;
+        background: transparent;
+    }
+
+    &.is-open .collapsible-body {
+        margin-bottom: brand.$spacing-3;
+        padding-top: brand.$spacing-4 !important;
+        border-top: 1px solid brand.$border-color;
+    }
+
+    .collapsible-body .d-flex.flex-row {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        gap: brand.$spacing-8;
+        width: 100%;
+        padding: 0 !important;
+        box-sizing: border-box;
+        text-align: left;
+    }
+
+    // Each group is a column. The label is the first line, and the options stack under it.
+    [role="radiogroup"] {
+        position: relative;
+        flex: 0 0 auto;
+        align-self: stretch;
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        row-gap: brand.$spacing-2;
+        width: auto !important;
+        min-width: 0;
+        max-width: 100%;
+        margin: 0;
+        padding: 0 !important;
+        border: 0;
+        background: transparent;
+        box-sizing: border-box;
+    }
+
+    // English labels. The option text itself still comes from the app.
+    [role="radiogroup"]::before {
+        position: static;
+        display: block;
+        width: auto;
+        margin: 0 0 brand.$spacing-1;
+        color: brand.$text-color-muted;
+        font-size: 11px;
+        font-weight: brand.$font-weight-medium;
+        letter-spacing: 0.06em;
+        line-height: 20px;
+        text-transform: uppercase;
+    }
+
+    .collapsible-body form > .d-flex.flex-row:has(> [role="radiogroup"]:nth-child(3)) > [role="radiogroup"]:nth-child(1)::before {
+        content: "Type";
+    }
+
+    .collapsible-body form > .d-flex.flex-row:has(> [role="radiogroup"]:nth-child(3)) > [role="radiogroup"]:nth-child(2)::before {
+        content: "Status";
+    }
+
+    .collapsible-body form > .d-flex.flex-row:has(> [role="radiogroup"]:nth-child(3)) > [role="radiogroup"]:nth-child(3)::before {
+        content: "Sort by";
+    }
+
+    .collapsible-body form > .d-flex.flex-row:only-child > [role="radiogroup"]:only-child::before {
+        content: "Sort by";
+    }
+
+    .collapsible-body form > .d-flex.flex-row ~ .d-flex.flex-row > [role="radiogroup"]::before {
+        content: "Group";
+    }
+
+    .filter-menu {
+        position: relative;
+        width: auto !important;
+        align-self: flex-start;
+        align-items: center !important;
+        justify-content: flex-start;
+        flex: 0 0 auto !important;
+        gap: brand.$spacing-2;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        color: brand.$color-clay !important;
+        font-size: 13px !important;
+        font-weight: brand.$font-weight-body !important;
+        line-height: 20px !important;
+        white-space: nowrap;
+
+        .text-truncate {
+            overflow: visible;
+            display: block;
+            white-space: nowrap;
+            text-overflow: unset;
+            line-height: 20px;
+        }
+
+        // Same box as the add-a-post checkbox: 18px, deep-brown border,
+        // filled deep brown with a white tick when selected.
+        $ds-checkbox-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+
+        .pgn__icon {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex: 0 0 18px;
+            width: 18px !important;
+            min-width: 18px !important;
+            height: 18px !important;
+            margin: 0 !important;
+            border: 1.5px solid brand.$color-deep-brown;
+            border-radius: brand.$border-radius-sm;
+            background: brand.$color-white;
+            box-sizing: border-box;
+        }
+
+        .pgn__icon svg {
+            display: block !important;
+            width: 12px !important;
+            height: 12px !important;
+            margin: 0 !important;
+            background-color: transparent;
+            -webkit-mask: $ds-checkbox-check center / contain no-repeat;
+            mask: $ds-checkbox-check center / contain no-repeat;
+
+            path {
+                opacity: 0;
+            }
+        }
+
+        // An unselected option keeps the empty box. The tick stays hidden.
+        .pgn__icon.invisible {
+            display: inline-flex !important;
+            visibility: visible !important;
+        }
+
+        &:hover {
+            background: transparent !important;
+            color: brand.$color-clay;
+        }
+
+        &:focus-visible {
+            background: transparent !important;
+            outline: brand.$focus-ring-width solid brand.$color-espresso;
+            outline-offset: $ds-focus-offset-tight;
+        }
+
+        &[aria-checked="true"] {
+            background: transparent !important;
+            color: brand.$color-espresso !important;
+            border-radius: 0 !important;
+            margin-left: 0 !important;
+            padding: 0 !important;
+
+            .pgn__icon {
+                background: brand.$color-deep-brown;
+                border-color: brand.$color-deep-brown;
+            }
+
+            svg {
+                background-color: brand.$color-white;
+            }
+        }
+    }
+}
+
+// Discussion count on topic rows. PostOutline stays in the markup.
+// This paints the course Chat bubble over it, on the discussions page and in the unit iframe.
+$ds-discussion-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 11.5a8.4 8.4 0 0 1-9 8.4 9.3 9.3 0 0 1-3.4-.7L3 21l1.8-5.1A8.2 8.2 0 0 1 3.6 11.5 8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z'/%3E%3C/svg%3E");
+$ds-discussion-icon-filled: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M21 11.5a8.4 8.4 0 0 1-9 8.4 9.3 9.3 0 0 1-3.4-.7L3 21l1.8-5.1A8.2 8.2 0 0 1 3.6 11.5 8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z'/%3E%3C/svg%3E");
+$ds-pin-icon-filled: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpolygon fill='%23000' points='2.77 20.53 8.78 13.81 10.19 15.22 3.47 21.23 2.77 20.53'/%3E%3Cpath fill='%23000' d='M13.73,18.76,5.24,10.27A5.94,5.94,0,0,1,9.48,8.52,5.42,5.42,0,0,1,11,8.73L14.5,5.26a1.49,1.49,0,0,1,2-2,1.32,1.32,0,0,1,.42.29l3.53,3.53a1.32,1.32,0,0,1,.29.42,1.49,1.49,0,0,1-2,2L15.27,13a5.42,5.42,0,0,1,.21,1.55A5.94,5.94,0,0,1,13.73,18.76Z'/%3E%3C/svg%3E");
+$ds-lock-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' fill-rule='evenodd' d='M12,2 C15.2383886,2 17.8775714,4.56557346 17.9958615,7.77506164 L18,8 L19,8 C20.0543909,8 20.9181678,8.81587733 20.9945144,9.85073759 L21,10 L21,20 C21,21.0543909 20.18415,21.9181678 19.1492661,21.9945144 L19,22 L5,22 C3.94563773,22 3.08183483,21.18415 3.00548573,20.1492661 L3,20 L3,10 C3,8.94563773 3.81587733,8.08183483 4.85073759,8.00548573 L5,8 L6,8 C6,4.68629 8.68629,2 12,2 Z M19,10 L5,10 L5,20 L19,20 L19,10 Z M12,12 C13.1046,12 14,12.8954 14,14 C14,14.6833538 13.657297,15.286613 13.1343876,15.6473597 L13,15.7324 L13,17 C13,17.5523 12.5523,18 12,18 C11.48715,18 11.0644908,17.613973 11.0067275,17.1166239 L11,17 L11,15.7324 C10.4022,15.3866 10,14.7403 10,14 C10,12.8954 10.8954,12 12,12 Z M12,4 C9.79086,4 8,5.79086 8,8 L16,8 C16,5.79086 14.2091,4 12,4 Z'/%3E%3C/svg%3E");
+$ds-edit-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z'/%3E%3C/svg%3E");
+$ds-report-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-0.5 0 25 25' fill='none'%3E%3Cpath d='M18.2202 21.25H5.78015C5.14217 21.2775 4.50834 21.1347 3.94373 20.8364C3.37911 20.5381 2.90402 20.095 2.56714 19.5526C2.23026 19.0101 2.04372 18.3877 2.02667 17.7494C2.00963 17.111 2.1627 16.4797 2.47015 15.92L8.69013 5.10999C9.03495 4.54078 9.52077 4.07013 10.1006 3.74347C10.6804 3.41681 11.3346 3.24518 12.0001 3.24518C12.6656 3.24518 13.3199 3.41681 13.8997 3.74347C14.4795 4.07013 14.9654 4.54078 15.3102 5.10999L21.5302 15.92C21.8376 16.4797 21.9907 17.111 21.9736 17.7494C21.9566 18.3877 21.7701 19.0101 21.4332 19.5526C21.0963 20.095 20.6211 20.5381 20.0565 20.8364C19.4919 21.1347 18.8581 21.2775 18.2202 21.25V21.25Z' stroke='%23000' stroke-width='1.875' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M10.8809 17.15C10.8809 17.0021 10.9102 16.8556 10.9671 16.7191C11.024 16.5825 11.1074 16.4586 11.2125 16.3545C11.3175 16.2504 11.4422 16.1681 11.5792 16.1124C11.7163 16.0567 11.8629 16.0287 12.0109 16.03C12.2291 16.034 12.4413 16.1021 12.621 16.226C12.8006 16.3499 12.9398 16.5241 13.0211 16.7266C13.1023 16.9292 13.122 17.1512 13.0778 17.3649C13.0335 17.5786 12.9272 17.7745 12.7722 17.9282C12.6172 18.0818 12.4203 18.1863 12.2062 18.2287C11.9921 18.2711 11.7703 18.2494 11.5685 18.1663C11.3666 18.0833 11.1938 17.9426 11.0715 17.7618C10.9492 17.5811 10.8829 17.3683 10.8809 17.15ZM11.2409 14.42L11.1009 9.20001C11.0876 9.07453 11.1008 8.94766 11.1398 8.82764C11.1787 8.70761 11.2424 8.5971 11.3268 8.5033C11.4112 8.40949 11.5144 8.33449 11.6296 8.28314C11.7449 8.2318 11.8697 8.20526 11.9959 8.20526C12.1221 8.20526 12.2469 8.2318 12.3621 8.28314C12.4774 8.33449 12.5805 8.40949 12.6649 8.5033C12.7493 8.5971 12.8131 8.70761 12.852 8.82764C12.8909 8.94766 12.9042 9.07453 12.8909 9.20001L12.7609 14.42C12.7609 14.6215 12.6808 14.8149 12.5383 14.9574C12.3957 15.0999 12.2024 15.18 12.0009 15.18C11.7993 15.18 11.606 15.0999 11.4635 14.9574C11.321 14.8149 11.2409 14.6215 11.2409 14.42Z' fill='%23000'/%3E%3C/svg%3E");
+
+#main .d-flex.align-items-center.mt-2\.5 > .mr-3\.5:first-child {
+    .pgn__icon {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 24px !important;
+        height: 24px !important;
+        line-height: 0 !important;
+    }
+
+    svg {
+        display: block !important;
+        width: 24px !important;
+        height: 24px !important;
+        margin: 0 !important;
+        background-color: brand.$color-deep-saffron;
+        -webkit-mask: $ds-discussion-icon center / contain no-repeat;
+        mask: $ds-discussion-icon center / contain no-repeat;
+
+        path {
+            opacity: 0;
+        }
+    }
+}
+
+// Add a post "Discussion" card. The filled Post glyph stays in the markup.
+// This paints the same chat bubble used on General and subsection rows,
+// and the card's own color still supplies clay or saffron.
+.post-form label[for="post-type-discussion"] .text-primary-300 svg {
+    background-color: currentColor;
+    -webkit-mask: $ds-discussion-icon center / contain no-repeat;
+    mask: $ds-discussion-icon center / contain no-repeat;
+
+    path {
+        opacity: 0;
+    }
+}
+
+.post-form label[for="post-type-discussion"] .card.border-primary-500-2 .text-primary-300 svg {
+    background-color: brand.$color-saffron;
+    -webkit-mask: $ds-discussion-icon-filled center / contain no-repeat;
+    mask: $ds-discussion-icon-filled center / contain no-repeat;
+}
+
+#main .outline-staff-color {
+    outline-color: brand.$color-dusk !important;
+}
+
+#main .text-staff-color {
+    color: brand.$color-deep-saffron !important;
+}
+
+// Default profile photos stay in the markup. This paints the nav person icon over them.
+// Uploaded photos use a different address, so they are left as they are.
+#main img.pgn__avatar[src*="/profiles/default_"] {
+    overflow: hidden;
+    border-radius: 50%;
+    object-fit: none;
+    object-position: -9999px -9999px;
+    background-color: brand.$color-saffron;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231C0A00' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 62%;
+}
+
+// Pinned rows still render Paragon PushPin. Paint the filled menu pin over it.
+#main .discussion-post .post-summary-icons-dimensions.text-gray-700 svg {
+    background-color: brand.$color-deep-saffron;
+    -webkit-mask: $ds-pin-icon-filled center / contain no-repeat;
+    mask: $ds-pin-icon-filled center / contain no-repeat;
+
+    path {
+        opacity: 0;
+    }
+}
+
+// A closed post shows Paragon Locked on the footer. Paint the menu lock over it.
+#main [data-testid="post-footer"] .justify-content-end .pgn__icon:not(.text-gray-500) svg {
+    background-color: brand.$color-deep-saffron;
+    -webkit-mask: $ds-lock-icon center / contain no-repeat;
+    mask: $ds-lock-icon center / contain no-repeat;
+
+    path {
+        opacity: 0;
+    }
+}
+
+// Reported counts on topic rows, the unit iframe, and learner cards, plus the reported banner.
+#main .mt-2\.5 .pgn__icon.text-danger svg,
+#main .alert-danger .alert-icon svg {
+    background-color: brand.$color-danger;
+    -webkit-mask: $ds-report-icon center / contain no-repeat;
+    mask: $ds-report-icon center / contain no-repeat;
+
+    path {
+        opacity: 0;
+    }
+}
+
+// Learner cards use the old pencil for the posts count.
+#main .d-flex.align-items-center.pt-1.mt-2\.5 .pgn__icon.ml-4:not(.text-danger) svg {
+    background-color: brand.$color-deep-saffron;
+    -webkit-mask: $ds-edit-icon center / contain no-repeat;
+    mask: $ds-edit-icon center / contain no-repeat;
+
+    path {
+        opacity: 0;
+    }
+}
+
+// General and Section titles share one weight. Subsections stay deep brown.
+#main .discussion-topic-group > .font-weight-bold,
+#main .discussion-topic-group > .font-weight-bold a {
+    color: brand.$color-espresso !important;
+    font-weight: brand.$font-weight-semibold !important;
+}
+
+#main .discussion-posts > .d-flex > .text-primary-500 {
+    color: brand.$color-espresso !important;
+}
+
+#main .list-group .text-truncate.font-weight-500.font-style {
+    color: brand.$color-espresso !important;
+    font-weight: brand.$font-weight-semibold !important;
+}
+
+#main a.discussion-topic,
+#main a.subsection,
+#main .filter-bar .collapsible-trigger > span:first-child {
+    color: brand.$text-color-primary !important;
+}
+
+// General is a topic link, so the row rule above does not cover it.
+// Its name matches the Section title: espresso, weight 600.
+#main .discussion-topics > .list-group > a.discussion-topic .topic-name,
+#main [data-testid="inContext-topics-view"] > .list-group > a.discussion-topic .topic-name {
+    color: brand.$color-espresso !important;
+    font-weight: brand.$font-weight-semibold !important;
+}
+
+#main .filter-bar .collapsible-trigger > span.font-style {
+    color: brand.$color-deep-saffron !important;
+    font-weight: brand.$font-weight-medium !important;
+}
+
+#main .mt-2\.5 > .mr-3\.5:nth-child(2) .pgn__icon {
+    color: brand.$color-deep-saffron !important;
+}
+
+// Post rows: title on one line, excerpt under it.
+#main a.discussion-topic,
+#main a.discussion-post,
+#main [data-testid="sidebar"] .border-bottom.border-light-400 {
+    border-bottom: 1px solid brand.$border-color !important;
+}
+
+#main a.discussion-post {
+    background: brand.$color-white;
+
+    > div {
+        gap: $ds-space-14;
+        padding: brand.$spacing-4 $ds-space-20 !important;
+        background: brand.$color-white !important;
+    }
+
+    &:hover > div {
+        background: brand.$color-parchment !important;
+    }
+
+    > .post-summary-card-selected {
+        background: brand.$section-bg !important;
+        border-right-color: brand.$color-deep-saffron !important;
+    }
+
+    .text-truncate {
+        overflow: visible;
+        white-space: normal;
+
+        > span:first-child {
+            display: block;
+            overflow: hidden;
+            color: brand.$text-color !important;
+            font-size: $ds-font-size-title;
+            font-weight: brand.$font-weight-semibold !important;
+            line-height: $ds-line-height-title;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        > span:last-child {
+            display: -webkit-box;
+            overflow: hidden;
+            margin-top: 3px;
+            color: brand.$text-color-primary !important;
+            font-size: $ds-font-size-meta;
+            font-weight: brand.$font-weight-body !important;
+            line-height: $ds-line-height-excerpt;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+    }
+
+    .flex-fill > .d-flex.align-items-center:not(.text-gray-700) {
+        margin-top: 3px;
+        color: brand.$color-deep-saffron;
+        font-size: $ds-font-size-meta;
+        font-weight: brand.$font-weight-medium;
+    }
+
+    // Learner counts match the topic rows. The activity bubble and pencil match the other icons.
+    .flex-fill > .d-flex.align-items-center.pt-1 {
+        color: brand.$text-color-primary;
+
+        .pgn__icon:not(.text-danger) {
+            color: brand.$color-deep-saffron !important;
+        }
+    }
+
+    .flex-fill > .text-gray-700 {
+        height: auto !important;
+        margin-top: 9px;
+        color: brand.$text-color-muted !important;
+        font-size: $ds-font-size-time;
+        gap: $ds-space-18 !important;
+
+        // The activity row carries its own gray utility, which beats this color.
+        > .ml-4\.5.text-gray-700 {
+            color: inherit !important;
+        }
+
+        // Like, follow, activity, and the status group each bring their own margin.
+        // One gap keeps those items evenly spaced. The timestamp stays on the right.
+        > .mr-4\.5,
+        > .ml-4\.5,
+        > .ml-2 {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+
+        > .d-flex.align-items-center.ml-4\.5:not(.text-gray-700) {
+            gap: $ds-space-18;
+
+            > .mr-2 {
+                margin-right: 0 !important;
+            }
+        }
+    }
+
+    .badge {
+        padding: 2px 7px !important;
+        border: 1px solid brand.$border-color;
+        border-radius: $ds-radius-badge !important;
+        background: brand.$color-parchment !important;
+        color: brand.$color-terracotta !important;
+        font-size: brand.$font-size-label !important;
+        letter-spacing: 0.6px;
+    }
+}
+
+// Empty pane. The bubble is .ds-empty-ico from Empty.jsx.
+#main .min-content-height:has(.ds-empty-ico) {
+    flex: 1 1 auto;
+    align-self: stretch;
+    background: brand.$color-parchment !important;
+    border-top: 1px solid brand.$border-color;
+    border-right: 1px solid brand.$border-color;
+    border-bottom: 1px solid brand.$border-color;
+    border-radius: 0 brand.$border-radius-md brand.$border-radius-md 0;
+}
+
+// Without the list column beside it, the pane is the whole card, so it needs
+// its own left edge and rounded left corners.
+#main:not(:has(.header-action-bar.border-bottom)) [data-testid="sidebar"].d-none ~ .min-content-height:has(.ds-empty-ico) {
+    border-left: 1px solid brand.$border-color;
+    border-radius: brand.$border-radius-md;
+}
+
+#main .min-content-height:has(.ds-empty-ico) > .d-flex.flex-column {
+    gap: $ds-space-14;
+    text-align: center;
+
+    .ds-empty-ico {
+        width: 110px;
+        height: auto;
+        max-width: 100%;
+        display: block;
+        margin: 0 auto;
+        object-fit: contain;
+    }
+
+    h3 {
+        margin: 0;
+        padding-top: 0 !important;
+        color: brand.$text-color !important;
+        font-family: brand.$font-family-brand-display !important;
+        font-size: $ds-empty-title-size !important;
+        font-weight: brand.$font-weight-medium !important;
+        line-height: $ds-empty-title-line-height;
+    }
+
+    p {
+        max-width: 34ch;
+        margin: 0;
+        color: brand.$text-color-muted;
+        font-size: $ds-font-size-ui;
+        font-weight: brand.$font-weight-body;
+        line-height: $ds-empty-subtitle-line-height;
+    }
+
+    // Match the existing "Add a post" button (.btn-brand)
+    .btn-brand {
+        min-height: 36px;
+        padding: $ds-space-6 $ds-space-18 !important;
+        border-radius: $ds-radius-control !important;
+        font-size: 13.5px !important;
+        white-space: nowrap !important;
+        flex-shrink: 0;
+
+        &:hover:not(:disabled):not(.disabled) {
+            background: $ds-accent-hover !important;
+        }
+
+        &:focus-visible {
+            outline: brand.$focus-ring-width solid brand.$color-espresso !important;
+            outline-offset: $ds-focus-offset-tight;
+        }
+    }
+}
+
+
+
+#main .post-form {
+    margin: 0 !important;
+    padding: brand.$spacing-8 !important;
+    width: auto !important;
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: calc(100% - 3rem) !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    > h4,
+    > h4.mb-4 {
+        color: brand.$color-espresso !important;
+        font-family: brand.$font-family-brand-ui !important;
+        font-size: 20px !important;
+        font-weight: 600 !important;
+        margin-bottom: 12px !important;
+        line-height: 1.2 !important;
+    }
+
+    // Post type selector cards (Discussion / Question)
+    .d-flex.flex-row.flex-wrap:has(label[for^="post-type-"]),
+    .d-flex.flex-row.flex-wrap[aria-label] {
+        gap: brand.$spacing-3;
+
+        > label[for^="post-type-"] {
+            flex: 1 1 0;
+            margin-right: 0 !important;
+
+            .card {
+                width: 100% !important;
+                height: 44px !important;
+                border-radius: brand.$border-radius-md !important;
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 0 brand.$spacing-3 !important;
+                cursor: pointer;
+                transition: border-color brand.$interaction-transition, background-color brand.$interaction-transition;
+
+                // Unselected card (Question / Discussion inactive):
+                &:not(.border-primary-500-2),
+                &.border-light-400-2 {
+                    border: 1px solid brand.$color-dusk !important;
+                    background-color: brand.$color-white !important;
+
+                    .text-primary-300 {
+                        color: brand.$color-clay !important;
+
+                        svg {
+                            fill: currentColor !important;
+                        }
+                    }
+
+                    .text-gray-700 {
+                        color: brand.$color-clay !important;
+                        font-weight: brand.$font-weight-medium !important;
+                        transition: color brand.$interaction-transition;
+                    }
+
+                    &:hover {
+                        border-color: brand.$color-clay !important;
+
+                        .text-gray-700 {
+                            color: brand.$color-espresso !important; // #1C0A00 on hover
+                        }
+                    }
+                }
+
+                // Selected card: sand fill so it is distinct from the white inactive card.
+                &.border-primary-500-2 {
+                    border: 1.5px solid brand.$color-bark !important;
+                    background-color: brand.$color-sand !important;
+
+                    .text-primary-300 {
+                        color: brand.$color-saffron !important;
+
+                        svg {
+                            fill: currentColor !important;
+                        }
+                    }
+
+                    .text-gray-700 {
+                        color: brand.$color-espresso !important; // #1C0A00 when active
+                        font-weight: brand.$font-weight-semibold !important;
+                    }
+                }
+            }
+
+            .px-4.py-3 {
+                padding: 0 !important;
+                display: inline-flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 8px !important;
+            }
+        }
+    }
+
+
+    // Field chrome. Height, padding, and the floating label stay on Paragon's
+    // default, so Post title and Topic area behave the same. An invalid field
+    // keeps Paragon's error border instead of this resting border.
+    .pgn__form-group,
+    .form-group {
+        position: relative;
+    }
+
+    input.form-control,
+    select.form-control {
+        font-family: brand.$font-family-brand-ui !important;
+        font-size: 14.5px !important;
+        color: brand.$color-espresso !important;
+        border-radius: brand.$border-radius-md !important;
+        background-color: brand.$color-white !important;
+
+        &:not(.is-invalid) {
+            border-color: brand.$color-dusk !important;
+
+            &:hover:not(:disabled) {
+                border-color: brand.$color-clay !important;
+            }
+
+            &:focus {
+                border-color: brand.$color-deep-saffron !important;
+                box-shadow: 0 0 0 2px rgba(brand.$color-deep-saffron, 0.15) !important;
+            }
+        }
+    }
+
+    .pgn__form-label,
+    .pgn__form-control-floating-label-text {
+        color: brand.$color-clay !important;
+    }
+
+    // TinyMCE Editor wrapper & full expansion chain
+    > div:has(.tox-tinymce),
+    > .mb-3:has(.tox-tinymce) {
+        flex: 1 1 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: 220px !important;
+    }
+
+    .tox.tox-tinymce,
+    .tox-tinymce {
+        min-height: 220px !important;
+        flex: 1 1 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100% !important;
+
+        .tox-editor-container {
+            flex: 1 1 auto !important;
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+        }
+
+        .tox-sidebar-wrap {
+            flex: 1 1 auto !important;
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+        }
+
+        .tox-edit-area {
+            flex: 1 1 auto !important;
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+        }
+
+        .tox-edit-area__iframe {
+            min-height: 180px !important;
+            flex: 1 1 auto !important;
+            height: 100% !important;
+        }
+
+        border: 1px solid brand.$color-dusk !important;
+        border-radius: brand.$border-radius-md !important;
+        background-color: brand.$color-white !important;
+
+        .tox-toolbar:not(.tox-toolbar__overflow),
+        .tox-toolbar__primary {
+            background-color: brand.$color-white !important;
+            border-bottom: 1px solid brand.$color-dusk !important;
+        }
+
+        .tox-tbtn {
+            color: brand.$color-espresso !important;
+
+            svg {
+                fill: brand.$color-espresso !important;
+            }
+
+            &:hover {
+                background-color: brand.$color-parchment !important;
+            }
+        }
+
+        // Paragraph / Header dropdown: 500 weight (medium)
+        .tox-tbtn--select {
+            color: brand.$color-espresso !important;
+
+            .tox-tbtn__select-label {
+                color: brand.$color-espresso !important;
+                font-size: 15px !important;
+                font-weight: brand.$font-weight-medium !important; // 500 weight from _variables.scss
+            }
+
+            .tox-tbtn__select-chevron svg {
+                fill: brand.$color-espresso !important;
+                transform: scale(1.1);
+            }
+        }
+
+        .tox-statusbar {
+            border-top: 1px solid brand.$color-dusk !important;
+            background-color: brand.$color-white !important;
+            color: brand.$color-stone !important;
+
+            .tox-statusbar__path {
+                display: none !important;
+            }
+
+            a,
+            .tox-statusbar__path-item,
+            .tox-statusbar__wordcount {
+                color: brand.$color-stone !important;
+            }
+
+            svg {
+                fill: brand.$color-stone !important;
+            }
+        }
+    }
+
+
+    // Show preview link: bolder and bigger, no underline
+    [data-testid="show-preview-button"],
+    button[data-testid="show-preview-button"],
+    .btn[data-testid="show-preview-button"] {
+        color: brand.$color-deep-saffron !important;
+        font-family: brand.$font-family-brand-ui !important;
+        font-size: 15px !important;
+        font-weight: brand.$font-weight-bold !important;
+        text-decoration: none !important;
+
+        &:hover,
+        &:focus,
+        &:active {
+            color: brand.$primary-hover !important;
+            text-decoration: none !important;
+        }
+    }
+
+    // Checkboxes: "Notify all learners", "Follow this post"
+    // Text is bolder and bigger, with half-character spacing from checkbox
+    .d-flex.flex-row:has(.pgn__form-checkbox),
+    .d-flex.flex-row:has(input[type="checkbox"]),
+    div:has(.pgn__form-checkbox),
+    div:has(input[type="checkbox"]),
+    .pgn__form-checkbox,
+    .custom-control.custom-checkbox,
+    .form-check {
+        color: brand.$color-clay !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0 !important;
+
+        .pgn__form-checkbox-label,
+        .custom-control-label,
+        .form-check-label,
+        span,
+        label {
+            color: brand.$color-clay !important;
+            font-family: brand.$font-family-brand-ui !important;
+            font-size: 14px !important;
+            font-weight: brand.$font-weight-semibold !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            line-height: 1.2 !important;
+            margin-bottom: 0 !important;
+            margin-left: brand.$spacing-2 !important;
+            padding-left: 0 !important;
+        }
+    }
+
+    .pgn__form-checkbox-input,
+    input[type="checkbox"],
+    input[type="checkbox"].form-check-input,
+    input[type="checkbox"].custom-control-input {
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        margin: 0 !important;
+        margin-right: 0 !important;
+        width: 18px !important;
+        min-width: 18px !important;
+        height: 18px !important;
+        border-radius: 4px !important;
+        border: 1.5px solid brand.$color-deep-brown !important;
+        background-color: brand.$color-white !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        background-size: 12px 12px !important;
+        cursor: pointer !important;
+        flex-shrink: 0 !important;
+        align-self: center !important;
+        transition: background-color 150ms ease, border-color 150ms ease !important;
+
+        // When filled, use $color-deep-brown (#5A2D0C)
+        &:checked {
+            background-color: brand.$color-deep-brown !important;
+            border-color: brand.$color-deep-brown !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") !important;
+        }
+
+        &::before,
+        &::after,
+        &:focus::before,
+        &:focus::after,
+        &:focus-visible::before,
+        &:focus-visible::after {
+            content: none !important;
+            display: none !important;
+            border: 0 !important;
+            box-shadow: none !important;
+            background: none !important;
+        }
+
+        &:focus,
+        &:focus-visible,
+        &:active {
+            outline: none !important;
+            outline-offset: 0 !important;
+            box-shadow: none !important;
+        }
+    }
+
+    .custom-control-label::before,
+    .custom-control-label::after,
+    .custom-control-input:focus ~ .custom-control-label::before,
+    .form-check-label::before,
+    .form-check-label::after {
+        content: none !important;
+        box-shadow: none !important;
+        background: none !important;
+        border: 0 !important;
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before {
+        background-color: transparent !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+    }
+
+    div:has(> [data-testid="show-preview-button"]) {
+        margin-bottom: 0 !important;
+    }
+
+    > .d-flex.flex-row.mt-n4 {
+        margin-top: brand.$spacing-2 !important;
+        margin-bottom: 0 !important;
+        gap: brand.$spacing-4 !important;
+    }
+
+    > .d-flex.justify-content-end {
+        margin-top: brand.$spacing-3 !important;
+    }
+}
+
+// Learning unit iframe (?inContextSidebar) — post editor colors & layout.
+body:has(#main .header-action-bar.border-bottom) {
+    background-color: brand.$color-white !important;
+}
+
+#main:has(.header-action-bar.border-bottom) {
+    background-color: brand.$color-white !important;
+    height: 100dvh;
+    min-height: 0;
+
+    > .d-flex.flex-row.position-relative {
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        border: 0 !important;
+    }
+
+    // Outer background wrapper
+    .d-flex.bg-light-400.flex-column,
+    .bg-light-400 {
+        width: 100% !important;
+        max-width: 100% !important;
+        align-items: stretch !important;
+        background-color: brand.$color-white !important;
+    }
+
+    // Top Header Bar. Same 64px row as the notification title:
+    // 14px padding, a 36px close button, Cormorant title.
+    .header-action-bar.border-bottom {
+        background-color: brand.$color-white !important;
+        border-bottom: 1px solid brand.$color-dusk !important;
+
+        > .navbar {
+            // Keep the row in the page. fixed-top would take it out of flow and
+            // the pane below would still be sized as if the row were there.
+            position: relative !important;
+            box-sizing: border-box !important;
+            height: 64px !important;
+            min-height: 64px !important;
+            padding-top: 14px !important;
+            padding-bottom: 14px !important;
+        }
+
+        > div,
+        .d-flex {
+            align-items: center !important;
+        }
+
+        h4 {
+            color: brand.$color-espresso !important;
+            font-family: brand.$font-family-brand-display !important;
+            font-size: 24px !important;
+            font-weight: brand.$font-weight-semibold !important;
+            margin: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            line-height: 1.2 !important;
+            align-self: center !important;
+        }
+
+        // Header "Add a post" button: remove border and background
+        .btn {
+            background: transparent !important;
+            background-color: transparent !important;
+            color: brand.$color-espresso !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 4px 12px !important;
+            min-height: 28px !important;
+            height: 28px !important;
+            font-size: 13.5px !important;
+            font-weight: brand.$font-weight-semibold !important;
+            line-height: 1 !important;
+            align-self: center !important;
+            margin-top: auto !important;
+            margin-bottom: auto !important;
+
+            &:hover,
+            &:focus,
+            &:active {
+                background: transparent !important;
+                background-color: transparent !important;
+                color: brand.$color-espresso !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+        }
+
+        // Divider next to Add a post
+        .border-right,
+        .border-light-300,
+        .border-light-400 {
+            border-color: brand.$color-dusk !important;
+            height: 18px !important;
+            margin-top: auto !important;
+            margin-bottom: auto !important;
+            align-self: center !important;
+        }
+
+        // Close icon button, same 36px target as the notification close button
+        .btn-icon {
+            width: 36px !important;
+            height: 36px !important;
+            min-width: 36px !important;
+            min-height: 36px !important;
+            padding: 0 !important;
+            color: brand.$color-espresso !important;
+            align-self: center !important;
+
+            svg {
+                fill: currentColor !important;
+            }
+        }
+    }
+
+    // The header plus and the line beside it. Hidden while the add-a-post
+    // form is open; closing the form brings them back.
+    &:has(.post-form) .header-action-bar .mr-2 {
+        display: none !important;
+    }
+
+    div:has(> [data-testid="show-preview-button"]) {
+        justify-content: flex-start !important;
+        margin-bottom: 0 !important;
+    }
+
+    .post-form > .d-flex.flex-row.mt-n4 {
+        margin-top: brand.$spacing-3 !important; // cancels mt-n4 in the iframe
+        width: 100% !important; // optional: drop w-75 squeeze in the panel
+    }
+
+    // Seamless form container inside sidebar (removes nested card container)
+    .post-form,
+    form.post-form,
+    form.card.post-form {
+        margin: 0 !important;
+        padding: brand.$spacing-8 !important;
+        gap: brand.$spacing-3;
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+
+        > h4,
+        > h4.mb-4 {
+            color: brand.$color-espresso !important;
+            font-family: brand.$font-family-brand-ui !important;
+            font-size: 20px !important;
+            font-weight: 600 !important;
+            margin-bottom: 12px !important;
+            line-height: 1.2 !important;
+        }
+
+        // Post type selector cards (Discussion / Question)
+        > .d-flex.flex-row.flex-wrap:has(label[for^="post-type-"]) {
+            flex-wrap: nowrap !important;
+            gap: brand.$spacing-2;
+            width: 100%;
+
+            > label[for^="post-type-"] {
+                flex: 1 1 0;
+                min-width: 0;
+                margin-right: 0 !important;
+
+                .card {
+                    width: 100% !important;
+                    height: 44px !important;
+                    border-radius: brand.$border-radius-md !important;
+                    display: flex !important;
+                    flex-direction: row !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    padding: 0 brand.$spacing-3 !important;
+                    cursor: pointer;
+                    transition: border-color brand.$interaction-transition, background-color brand.$interaction-transition;
+
+                    // Unselected card (Question / Discussion inactive):
+                    &:not(.border-primary-500-2),
+                    &.border-light-400-2 {
+                        border: 1px solid brand.$color-dusk !important;
+                        background-color: brand.$color-white !important;
+
+                        .text-primary-300 {
+                            color: brand.$color-clay !important;
+
+                            svg {
+                                fill: currentColor !important;
+                            }
+                        }
+
+                        .text-gray-700 {
+                            color: brand.$color-clay !important;
+                            font-weight: brand.$font-weight-medium !important;
+                            transition: color brand.$interaction-transition;
+                        }
+
+                        &:hover {
+                            border-color: brand.$color-clay !important;
+
+                            .text-gray-700 {
+                                color: brand.$color-espresso !important; // #1C0A00 on hover
+                            }
+                        }
+                    }
+
+                    // Selected card: sand fill so it is distinct from the white inactive card.
+                    &.border-primary-500-2 {
+                        border: 1.5px solid brand.$color-bark !important;
+                        background-color: brand.$color-sand !important;
+
+                        .text-primary-300 {
+                            color: brand.$color-saffron !important;
+
+                            svg {
+                                fill: currentColor !important;
+                            }
+                        }
+
+                        .text-gray-700 {
+                            color: brand.$color-espresso !important; // #1C0A00 when active
+                            font-weight: brand.$font-weight-semibold !important;
+                        }
+                    }
+                }
+
+                .px-4.py-3 {
+                    padding: 0 !important;
+                    display: inline-flex !important;
+                    flex-direction: row !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    gap: 8px !important;
+                }
+            }
+        }
+
+
+        // Field chrome. Height, padding, and the floating label stay on Paragon's
+        // default, so Post title and Topic area behave the same. An invalid field
+        // keeps Paragon's error border instead of this resting border.
+        .pgn__form-group,
+        .form-group {
+            position: relative;
+        }
+
+        input.form-control,
+        select.form-control {
+            font-family: brand.$font-family-brand-ui !important;
+            font-size: 15px !important;
+            color: brand.$color-espresso !important;
+            border-radius: brand.$border-radius-md !important;
+            background-color: brand.$color-white !important;
+
+            &:not(.is-invalid) {
+                border-color: brand.$color-dusk !important;
+
+                &:hover:not(:disabled) {
+                    border-color: brand.$color-clay !important;
+                }
+
+                &:focus {
+                    border-color: brand.$color-deep-saffron !important;
+                    box-shadow: 0 0 0 2px rgba(brand.$color-deep-saffron, 0.15) !important;
+                }
+            }
+        }
+
+        .pgn__form-label,
+        .pgn__form-control-floating-label-text {
+            color: brand.$color-clay !important;
+        }
+
+        // TinyMCE Editor
+        .tox-tinymce {
+            min-height: 200px;
+        }
+
+        .tox .tox-edit-area,
+        .tox .tox-edit-area__iframe {
+            min-height: 180px !important;
+        }
+
+        .tox.tox-tinymce {
+            border: 1px solid brand.$color-bark !important;
+            border-radius: brand.$border-radius-md !important;
+            background-color: brand.$color-white !important;
+
+            .tox-toolbar:not(.tox-toolbar__overflow),
+            .tox-toolbar__primary {
+                background-color: brand.$color-white !important;
+                border-bottom: 1px solid brand.$color-dusk !important;
+            }
+
+            .tox-tbtn {
+                color: brand.$color-espresso !important;
+
+                svg {
+                    fill: brand.$color-espresso !important;
+                }
+
+                &:hover {
+                    background-color: brand.$color-parchment !important;
+                }
+            }
+
+            // Paragraph / Header dropdown: 500 weight (medium)
+            .tox-tbtn--select {
+                color: brand.$color-espresso !important;
+
+                .tox-tbtn__select-label {
+                    color: brand.$color-espresso !important;
+                    font-size: 15px !important;
+                    font-weight: brand.$font-weight-medium !important; // 500 weight from _variables.scss
+                }
+
+                .tox-tbtn__select-chevron svg {
+                    fill: brand.$color-espresso !important;
+                    transform: scale(1.1);
+                }
+            }
+
+            .tox-statusbar {
+                border-top: 1px solid brand.$color-dusk !important;
+                background-color: brand.$color-white !important;
+                color: brand.$color-clay !important;
+
+                .tox-statusbar__path {
+                    display: none !important;
+                }
+
+                a,
+                .tox-statusbar__path-item,
+                .tox-statusbar__wordcount {
+                    color: brand.$color-clay !important;
+                }
+
+                svg {
+                    fill: brand.$color-clay !important;
+                }
+            }
+        }
+
+        // Show preview link: bolder and bigger, no underline
+        [data-testid="show-preview-button"],
+        button[data-testid="show-preview-button"],
+        .btn[data-testid="show-preview-button"] {
+            color: brand.$color-deep-saffron !important;
+            font-family: brand.$font-family-brand-ui !important;
+            font-size: 15px !important;
+            font-weight: brand.$font-weight-bold !important;
+            text-decoration: none !important;
+
+            &:hover,
+            &:focus,
+            &:active {
+                color: brand.$primary-hover !important;
+                text-decoration: none !important;
+            }
+        }
+
+        // Checkboxes: "Notify all learners", "Follow this post"
+        // Text is bolder and bigger, with half-character spacing from checkbox
+        .d-flex.flex-row:has(.pgn__form-checkbox),
+        .d-flex.flex-row:has(input[type="checkbox"]),
+        .post-form > div:has(.pgn__form-checkbox),
+        .post-form > div:has(input[type="checkbox"]),
+        .pgn__form-checkbox,
+        .custom-control.custom-checkbox,
+        .form-check {
+            color: brand.$color-clay !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 0 !important;
+
+            .pgn__form-checkbox-label,
+            .custom-control-label,
+            .form-check-label,
+            span,
+            label {
+                color: brand.$color-clay !important;
+                font-family: brand.$font-family-brand-ui !important;
+                font-size: 14px !important;
+                font-weight: brand.$font-weight-semibold !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                line-height: 1.2 !important;
+                margin-bottom: 0 !important;
+                margin-left: brand.$spacing-2 !important;
+                padding-left: 0 !important;
+            }
+        }
+
+        .pgn__form-checkbox-input,
+        input[type="checkbox"],
+        input[type="checkbox"].form-check-input,
+        input[type="checkbox"].custom-control-input {
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            margin: 0 !important;
+            margin-right: 0 !important;
+            width: 18px !important;
+            min-width: 18px !important;
+            height: 18px !important;
+            border-radius: 4px !important;
+            border: 1.5px solid brand.$color-deep-brown !important;
+            background-color: brand.$color-white !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+            background-size: 12px 12px !important;
+            cursor: pointer !important;
+            flex-shrink: 0 !important;
+            align-self: center !important;
+            transition: background-color 150ms ease, border-color 150ms ease !important;
+
+            // When filled, use $color-deep-brown (#5A2D0C)
+            &:checked {
+                background-color: brand.$color-deep-brown !important;
+                border-color: brand.$color-deep-brown !important;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") !important;
+            }
+
+            &::before,
+            &::after,
+            &:focus::before,
+            &:focus::after,
+            &:focus-visible::before,
+            &:focus-visible::after {
+                content: none !important;
+                display: none !important;
+                border: 0 !important;
+                box-shadow: none !important;
+                background: none !important;
+            }
+
+            &:focus,
+            &:focus-visible,
+            &:active {
+                outline: none !important;
+                outline-offset: 0 !important;
+                box-shadow: none !important;
+            }
+        }
+
+        .custom-control-label::before,
+        .custom-control-label::after,
+        .custom-control-input:focus ~ .custom-control-label::before,
+        .form-check-label::before,
+        .form-check-label::after {
+            content: none !important;
+            box-shadow: none !important;
+            background: none !important;
+            border: 0 !important;
+        }
+
+        .custom-control-input:checked ~ .custom-control-label::before {
+            background-color: transparent !important;
+            border-color: transparent !important;
+            box-shadow: none !important;
+        }
+
+    }
+
+    div:has(> [data-testid="show-preview-button"]) {
+        justify-content: flex-start !important;
+    }
+
+    .min-content-height:has(.ds-empty-ico) {
+        background: brand.$color-white !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        flex: 1 1 auto !important;
+        align-self: stretch !important;
+        // Header is 64px plus its 1px border. The pane fills what remains,
+        // instead of taking its own viewport height and opening a scrollbar.
+        min-height: 0 !important;
+        height: calc(100dvh - 65px) !important;
+        max-height: calc(100dvh - 65px) !important;
+        overflow: hidden !important;
+        justify-content: flex-start !important;
+        padding-top: 0 !important;
+
+        &::before {
+            content: "";
+            flex: 0 0 12%;
+        }
+    }
+
+    // A topic that has posts still mounts this pane beside the list. It was
+    // growing over the list, so the posts disappeared. Keep it only when the
+    // list is hidden, and let the list fill the panel.
+    [data-testid="sidebar"]:not(.d-none) ~ .min-content-height:has(.ds-empty-ico) {
+        display: none !important;
+    }
+
+    [data-testid="sidebar"]:not(.d-none):has(~ .min-content-height:has(.ds-empty-ico)) {
+        width: 100% !important;
+        max-width: none !important;
+        flex: 1 1 auto !important;
+    }
+
+    // Opened post only (the view after a row is clicked). The list is untouched.
+    // On the discussions page the window scrolls and this card's overflow is
+    // forced visible. The iframe is a fixed panel, so the column under the
+    // header is the one scroller and the card fills the panel width.
+    > .d-flex.flex-row.position-relative > .align-items-center.overflow-auto:has(.discussion-comments) {
+        align-self: stretch !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 0 !important;
+        height: calc(100dvh - 65px) !important;
+        max-height: calc(100dvh - 65px) !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        align-items: stretch !important;
+        background-color: brand.$color-parchment !important;
+    }
+
+    .discussion-comments {
+        width: auto !important;
+        max-width: 100% !important;
+        margin-left: 1.5rem !important;
+        margin-right: 1.5rem !important;
+        background-color: brand.$color-white !important;
+        border: 1px solid brand.$color-dusk !important;
+        box-sizing: border-box !important;
+    }
+
+    .on-focus:focus-within {
+        outline: none !important;
+    }
+
+    .post-card-comment.overflow-auto {
+        overflow: visible !important;
+        max-height: none !important;
+    }
+
+    .hover-card {
+        right: 12px !important;
+        margin-right: 0 !important;
+        max-width: calc(100% - 24px) !important;
+    }
+}
+
+// The app draws a 2px black outline on a focused post. The unit iframe already
+// clears it; this does the same on the discussions page.
+#main .on-focus:focus-within {
+    outline: none !important;
+}
+
+// Opened post. Same order as the list: espresso for the name and title,
+// clay for the quiet line, deep saffron for the one action and the icons.
+#main .discussion-comments {
+    background-color: brand.$color-white !important;
+    border: 1px solid brand.$color-dusk !important;
+
+    h5 {
+        color: brand.$color-espresso !important;
+        font-weight: brand.$font-weight-semibold !important;
+    }
+
+    .text-break {
+        color: brand.$color-espresso !important;
+        font-weight: brand.$font-weight-body !important;
+    }
+
+    .text-gray-500 {
+        color: brand.$color-clay !important;
+    }
+
+    a:not(:has(.author-name)) {
+        color: brand.$link-color !important;
+    }
+}
+
+#main .align-items-center.overflow-auto .author-name {
+    color: brand.$color-espresso !important;
+    font-weight: brand.$font-weight-semibold !important;
+}
+
+#main .align-items-center.overflow-auto .post-summary-timestamp,
+#main .comment-line,
+#main .discussion-comments .d-flex.flex-row.align-items-center > span.font-weight-500 {
+    color: brand.$color-deep-saffron !important;
+}
+
+#main .discussion-comments .d-flex.flex-row.align-items-center .pgn__icon {
+    color: brand.$color-deep-saffron !important;
+}
+
+#main .comments-sort .btn-tertiary,
+#main .comments-sort .pgn__icon {
+    color: brand.$color-deep-saffron !important;
+}
+
+// The sort menu is portaled out of #main, same as the actions menu.
+[data-testid="comment-sort-dropdown-modal-popup"] .btn-tertiary {
+    color: brand.$color-deep-saffron !important;
+
+    &:hover,
+    &:focus {
+        color: brand.$color-deep-saffron !important;
+    }
+}
+
+// Endorsed bar only. Discussions use bg-dark-500; questions use bg-success-500.
+#main .alert.bg-dark-500,
+#main .alert.bg-success-500 {
+    background-color: brand.$color-deep-saffron !important;
+}
+
+#main .post-card-comment.px-4:not(.overflow-auto) {
+    margin-top: 2.5rem !important;
+    margin-right: 10px !important;
+    margin-bottom: 40px !important;
+}
+
+// The reply avatar sits beside the gray box. Paint the whole row so the avatar is inside it.
+// The left edge matches the parent comment text.
+#main [data-testid^="reply-"] > .d-flex:has(> .bg-light-300) {
+    background-color: var(--pgn-color-light-300);
+    border-radius: 0.375rem;
+    margin-left: calc(0.125rem + 32px + 0.625rem);
+    padding-left: 0.125rem;
+
+    > .mr-3 {
+        margin-top: 0 !important;
+        margin-right: 0.625rem !important;
+    }
+
+    .pgn__avatar {
+        margin: 1.1rem 0.2rem 0 1rem !important;
+    }
+
+    > .bg-light-300 {
+        background-color: transparent !important;
+        border-radius: 0 !important;
+        max-width: none !important;
+        padding-left: 0 !important;
+    }
+}
+
+// The parent comment is outside .discussion-comments. Color and indent
+// apply on the comment card itself.
+#main .post-card-comment .comment-body,
+#main .post-card-comment .comment-body p,
+#main [data-testid^="reply-"] .html-loader,
+#main [data-testid^="reply-"] .html-loader p {
+    color: brand.$color-deep-brown !important;
+}
+
+#main .post-card-comment .comment-body {
+    margin-top: 0 !important;
+    margin-left: calc(0.125rem + 32px + 0.625rem) !important;
+}
+
+#main .post-card-comment > .ml-n1\.5.mt-10px:not(.d-flex) {
+    margin-top: 0 !important;
+    margin-left: calc(0.125rem + 32px + 0.625rem) !important;
+
+    .post-footer-icon-dimensions {
+        width: 20px !important;
+        height: 20px !important;
+        min-width: 20px !important;
+        min-height: 20px !important;
+        padding: 0 !important;
+        justify-content: flex-start !important;
+    }
+
+    .btn-icon__icon-container {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .like-icon-dimensions {
+        width: 16px !important;
+        height: 16px !important;
+    }
+
+    .font-style {
+        color: brand.$color-clay !important;
+    }
+}
+
+#main .hover-card {
+    border: 1px solid brand.$color-dusk !important;
+    border-radius: brand.$border-radius-md !important;
+    box-shadow: 0 2px 10px rgba(brand.$color-espresso, 0.12) !important;
+
+    // The card is locked at 36px, so the 44px touch-target minimum would
+    // push the button out of it.
+    > .d-flex:has(> .btn-tertiary) {
+        align-self: stretch !important;
+    }
+
+    .btn-tertiary:not(.btn-icon):not(.actions-dropdown-item) {
+        min-height: 0 !important;
+        height: 100% !important;
+        background-color: brand.$color-deep-saffron !important;
+        color: brand.$color-white !important;
+        border-radius: brand.$border-radius-sm !important;
+        font-weight: brand.$font-weight-medium !important;
+
+        &:hover,
+        &:focus {
+            background-color: brand.$primary-hover !important;
+            color: brand.$color-white !important;
+        }
+    }
+
+    .btn-icon,
+    .pgn__icon {
+        color: brand.$color-deep-saffron !important;
+    }
+
+    .hover-button:hover {
+        background-color: brand.$color-parchment !important;
+    }
+}
+
+// The menu renders inside the hover card, so these beat the saffron icon
+// rule and the 195px row width.
+#main .hover-card [data-testid="actions-dropdown-modal-popup"] {
+    padding: 0 !important;
+    align-items: stretch !important;
+}
+
+#main .hover-card [data-testid="actions-dropdown-modal-popup"] .actions-dropdown-item {
+    display: flex !important;
+    align-self: stretch !important;
+    width: auto !important;
+    max-width: none !important;
+}
+
+#main .hover-card [data-testid="report"] .pgn__icon,
+#main .hover-card [data-testid="delete"] .pgn__icon {
+    color: brand.$color-danger !important;
+}
+
+#main .hover-card [data-testid="unreport"] .pgn__icon {
+    color: brand.$color-danger-dark !important;
+}
+
+#main .hover-card [data-testid="report"].actions-dropdown-item.btn-tertiary:not(.page-link):hover:not(:disabled):not(.disabled),
+#main .hover-card [data-testid="unreport"].actions-dropdown-item.btn-tertiary:not(.page-link):hover:not(:disabled):not(.disabled),
+#main .hover-card [data-testid="delete"].actions-dropdown-item.btn-tertiary:not(.page-link):hover:not(:disabled):not(.disabled),
+#main .hover-card [data-testid="report"].actions-dropdown-item.btn-tertiary:not(.page-link):active:not(:disabled):not(.disabled),
+#main .hover-card [data-testid="unreport"].actions-dropdown-item.btn-tertiary:not(.page-link):active:not(:disabled):not(.disabled),
+#main .hover-card [data-testid="delete"].actions-dropdown-item.btn-tertiary:not(.page-link):active:not(:disabled):not(.disabled) {
+    background: brand.$error-bg !important;
+}
+
+#main [data-testid="add-response"] {
+    color: brand.$color-deep-saffron !important;
+    background-color: brand.$color-white !important;
+    border: 1px solid brand.$color-dusk !important;
+    border-radius: brand.$border-radius-md !important;
+}
+
+// The menu is portaled out of #main, so it is selected on its own.
+[data-testid="actions-dropdown-modal-popup"] {
+    background-color: brand.$color-white !important;
+    border: 1px solid brand.$color-dusk !important;
+    border-radius: brand.$border-radius-md !important;
+    box-shadow: $ds-shadow-card !important;
+
+    .dropdown-divider {
+        margin: 0 !important;
+        border-top-color: brand.$color-dusk !important;
+    }
+
+    // The Paragon copy glyph stays in the markup. This paints the two pages over it.
+    [data-testid="copy-link"] .pgn__icon svg {
+        background-color: brand.$color-deep-saffron;
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23000' d='M13.49 3 10.74.37A1.22 1.22 0 0 0 9.86 0h-4a1.25 1.25 0 0 0-1.22 1.25v11a1.25 1.25 0 0 0 1.25 1.25h6.72a1.25 1.25 0 0 0 1.25-1.25V3.88a1.22 1.22 0 0 0-.37-.88zm-.88 9.25H5.89v-11h2.72v2.63a1.25 1.25 0 0 0 1.25 1.25h2.75zm0-8.37H9.86V1.25l2.75 2.63z'/%3E%3Cpath fill='%23000' d='M10.11 14.75H3.39v-11H4V2.5h-.61a1.25 1.25 0 0 0-1.25 1.25v11A1.25 1.25 0 0 0 3.39 16h6.72a1.25 1.25 0 0 0 1.25-1.25v-.63h-1.25z'/%3E%3C/svg%3E") center / 23px 23px no-repeat;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23000' d='M13.49 3 10.74.37A1.22 1.22 0 0 0 9.86 0h-4a1.25 1.25 0 0 0-1.22 1.25v11a1.25 1.25 0 0 0 1.25 1.25h6.72a1.25 1.25 0 0 0 1.25-1.25V3.88a1.22 1.22 0 0 0-.37-.88zm-.88 9.25H5.89v-11h2.72v2.63a1.25 1.25 0 0 0 1.25 1.25h2.75zm0-8.37H9.86V1.25l2.75 2.63z'/%3E%3Cpath fill='%23000' d='M10.11 14.75H3.39v-11H4V2.5h-.61a1.25 1.25 0 0 0-1.25 1.25v11A1.25 1.25 0 0 0 3.39 16h6.72a1.25 1.25 0 0 0 1.25-1.25v-.63h-1.25z'/%3E%3C/svg%3E") center / 23px 23px no-repeat;
+
+        path {
+            opacity: 0;
+        }
+    }
+
+    // The Paragon pin glyph stays in the markup. Pin and Unpin share it.
+    [data-testid="pin"] .pgn__icon svg,
+    [data-testid="unpin"] .pgn__icon svg {
+        background-color: brand.$color-deep-saffron;
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpolygon fill='%23000' points='2.77 20.53 8.78 13.81 10.19 15.22 3.47 21.23 2.77 20.53'/%3E%3Cpath fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='M13.73,18.76,5.24,10.27A5.94,5.94,0,0,1,9.48,8.52,5.42,5.42,0,0,1,11,8.73L14.5,5.26a1.49,1.49,0,0,1,2-2,1.32,1.32,0,0,1,.42.29l3.53,3.53a1.32,1.32,0,0,1,.29.42,1.49,1.49,0,0,1-2,2L15.27,13a5.42,5.42,0,0,1,.21,1.55A5.94,5.94,0,0,1,13.73,18.76Z'/%3E%3C/svg%3E") center / contain no-repeat;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpolygon fill='%23000' points='2.77 20.53 8.78 13.81 10.19 15.22 3.47 21.23 2.77 20.53'/%3E%3Cpath fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='M13.73,18.76,5.24,10.27A5.94,5.94,0,0,1,9.48,8.52,5.42,5.42,0,0,1,11,8.73L14.5,5.26a1.49,1.49,0,0,1,2-2,1.32,1.32,0,0,1,.42.29l3.53,3.53a1.32,1.32,0,0,1,.29.42,1.49,1.49,0,0,1-2,2L15.27,13a5.42,5.42,0,0,1,.21,1.55A5.94,5.94,0,0,1,13.73,18.76Z'/%3E%3C/svg%3E") center / contain no-repeat;
+
+        path,
+        polygon {
+            opacity: 0;
+        }
+    }
+
+    // The Paragon close glyph stays in the markup. This paints the lock file over it.
+    // The file's walls are 2 units on a 24 grid, so 21.6px makes them 1.8px.
+    [data-testid="close"] .pgn__icon svg {
+        background-color: brand.$color-deep-saffron;
+        -webkit-mask: $ds-lock-icon center / 21.6px 21.6px no-repeat;
+        mask: $ds-lock-icon center / 21.6px 21.6px no-repeat;
+
+        path {
+            opacity: 0;
+        }
+    }
+
+    // The Paragon edit glyph stays in the markup. This paints the pencil over it.
+    [data-testid="edit"] .pgn__icon svg {
+        background-color: brand.$color-deep-saffron;
+        -webkit-mask: $ds-edit-icon center / contain no-repeat;
+        mask: $ds-edit-icon center / contain no-repeat;
+
+        path {
+            opacity: 0;
+        }
+    }
+
+    // The Paragon report glyph stays in the markup. This paints the alert triangle over it.
+    // The file stroke is 1.5 on a 25 grid. 1.875 makes it 1.8px in the 24px icon.
+    [data-testid="report"] .pgn__icon svg {
+        background-color: brand.$color-danger;
+        -webkit-mask: $ds-report-icon center / contain no-repeat;
+        mask: $ds-report-icon center / contain no-repeat;
+
+        path {
+            opacity: 0;
+        }
+    }
+
+    // The Paragon delete glyph stays in the markup. This paints the bin over it.
+    [data-testid="delete"] .pgn__icon svg {
+        background-color: brand.$color-danger;
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'/%3E%3Cpath d='M5 6l1 14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-14'/%3E%3Cpath d='M10 11v6'/%3E%3Cpath d='M14 11v6'/%3E%3C/svg%3E") center / contain no-repeat;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'/%3E%3Cpath d='M5 6l1 14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-14'/%3E%3Cpath d='M10 11v6'/%3E%3Cpath d='M14 11v6'/%3E%3C/svg%3E") center / contain no-repeat;
+
+        path {
+            opacity: 0;
+        }
+    }
+
+    .actions-dropdown-item {
+        width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        color: brand.$color-deep-saffron !important;
+        background-color: transparent !important;
+
+        span,
+        .pgn__icon {
+            color: brand.$color-deep-saffron !important;
+        }
+
+        &:first-child {
+            border-top-left-radius: brand.$border-radius-md !important;
+            border-top-right-radius: brand.$border-radius-md !important;
+        }
+
+        &:last-child {
+            border-bottom-left-radius: brand.$border-radius-md !important;
+            border-bottom-right-radius: brand.$border-radius-md !important;
+        }
+    }
+
+    // The shared tertiary button paints a teal wash on hover and click.
+    // These rows need to beat that selector, or the parchment never shows.
+    .actions-dropdown-item.btn-tertiary:not(.page-link) {
+        &:hover:not(:disabled):not(.disabled) {
+            background: brand.$color-parchment !important;
+            color: brand.$color-deep-saffron !important;
+        }
+
+        &:focus:not(:hover):not(:disabled):not(.disabled) {
+            background: transparent !important;
+            color: brand.$color-deep-saffron !important;
+        }
+
+        &:active:not(:disabled):not(.disabled) {
+            background: brand.$color-parchment !important;
+            color: brand.$color-deep-saffron !important;
+        }
+    }
+
+    [data-testid="report"].actions-dropdown-item.btn-tertiary:not(.page-link),
+    [data-testid="delete"].actions-dropdown-item.btn-tertiary:not(.page-link) {
+        .pgn__icon {
+            color: brand.$color-danger !important;
+        }
+
+        &:hover:not(:disabled):not(.disabled),
+        &:focus:not(:disabled):not(.disabled),
+        &:active:not(:disabled):not(.disabled) {
+            background: brand.$error-bg !important;
+            color: brand.$color-danger !important;
+        }
+    }
+
+    [data-testid="unreport"].actions-dropdown-item.btn-tertiary:not(.page-link) {
+        &:hover:not(:disabled):not(.disabled),
+        &:focus:not(:disabled):not(.disabled),
+        &:active:not(:disabled):not(.disabled) {
+            background: brand.$error-bg !important;
+            color: brand.$color-danger !important;
+        }
+    }
+
+    [data-testid="report"],
+    [data-testid="delete"] {
+        color: brand.$color-danger !important;
+
+        span {
+            color: brand.$color-danger !important;
+        }
+
+        .pgn__icon {
+            color: brand.$color-danger !important;
+        }
+    }
+
+    [data-testid="unreport"] {
+        color: brand.$color-danger !important;
+
+        span {
+            color: brand.$color-danger !important;
+        }
+
+        .pgn__icon {
+            color: brand.$color-danger-dark !important;
+
+            svg {
+                background-color: brand.$color-danger-dark;
+                -webkit-mask: $ds-report-icon center / contain no-repeat;
+                mask: $ds-report-icon center / contain no-repeat;
+
+                path {
+                    opacity: 0;
+                }
+            }
+        }
+    }
+}
+
+// ─── Responsive layout for the action bar ────────────────────────────────────
+// Only flex layout properties are changed here; all colours, fonts, borders,
+// and padding defined above are left exactly as-is.
+
+// Tablet (≤ 991 px): keep everything on one row; shrink the search field.
+@media (max-width: 991.98px) {
+    #main .header-action-bar:not(.border-bottom) > .navbar {
+        flex-wrap: nowrap;
+    }
+
+    #main .header-action-bar:not(.border-bottom) .pgn__searchfield {
+        flex: 0 1 200px;
+    }
+}
+
+// Tablet & Mobile (≤ 1024 px): post form actions
+// "Show preview", "Notify all learners", and "Follow this post" left-aligned and vertically stacked
+@media (max-width: 1024px) {
+    #main .post-form,
+    .post-form {
+        // Show preview: left-aligned with breathing room
+        div:has(> [data-testid="show-preview-button"]) {
+            display: flex !important;
+            justify-content: flex-start !important;
+            margin-top: brand.$spacing-2 !important;
+            margin-bottom: brand.$spacing-2 !important;
+
+            [data-testid="show-preview-button"],
+            button[data-testid="show-preview-button"],
+            .btn[data-testid="show-preview-button"] {
+                text-align: left !important;
+                align-self: flex-start !important;
+                padding-left: 0 !important;
+                margin-left: 0 !important;
+            }
+        }
+
+        // Checkbox container: vertical stack, left-aligned, full width
+        > .d-flex.flex-row.mt-n4,
+        > .d-flex:has(.pgn__form-checkbox),
+        > .d-flex:has(input[type="checkbox"]) {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin-top: 0 !important;
+            margin-bottom: brand.$spacing-3 !important;
+            gap: brand.$spacing-2 !important;
+
+            .form-group,
+            .pgn__form-group {
+                width: 100% !important;
+                display: flex !important;
+                justify-content: flex-start !important;
+            }
+
+            .pgn__form-checkbox,
+            .custom-control.custom-checkbox,
+            .form-check {
+                margin-right: 0 !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+                width: auto !important;
+                max-width: 100% !important;
+
+                label,
+                .pgn__form-checkbox-label,
+                .custom-control-label,
+                .form-check-label {
+                    white-space: normal !important;
+                    text-align: left !important;
+                }
+            }
+        }
+    }
+}
+
+// Mobile (≤ 767 px): pills → row 1 (full-width, equal), search + button → row 2.
+@media (max-width: 767.98px) {
+    #main .header-action-bar:not(.border-bottom) > .navbar {
+        flex-direction: column !important;
+        align-items: center;
+    }
+
+    #main .header-action-bar:not(.border-bottom) .nav-button-group {
+        width: 100%;
+        display: flex;
+        flex-direction: row !important;
+        // If the four labels cannot fit, the row scrolls instead of wrapping.
+        overflow-x: auto;
+    }
+
+    #main .header-action-bar:not(.border-bottom) .nav-button-group .nav-item {
+        flex: 1 1 0;
+    }
+
+    #main .header-action-bar:not(.border-bottom) .nav-button-group .nav-link {
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+
+    #main .header-action-bar:not(.border-bottom) > .navbar > div:not(.nav-button-group) {
+        width: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    #main .header-action-bar:not(.border-bottom) .pgn__searchfield {
+        flex: 1 1 auto;
+    }
+
+    #main .header-action-bar:not(.border-bottom) .btn-brand {
+        white-space: nowrap !important;
+        flex-shrink: 0;
+    }
+
+    #main:not(:has(.header-action-bar.border-bottom)) {
+        [data-testid="sidebar"] {
+            border-radius: brand.$border-radius-md;
+        }
+
+        .d-flex.flex-row.position-relative > .align-items-center.overflow-auto {
+            border-left: 1px solid brand.$border-color;
+            border-radius: brand.$border-radius-md;
+        }
+    }
+
+    // Add response stays one row inside the card. The iframe button is width 100%,
+    // which wraps the icons once the bar is narrower than the card.
+    #main .post-card-comment > .hover-card,
+    #main:has(.header-action-bar.border-bottom) .hover-card {
+        right: 8px !important;
+        left: auto !important;
+        margin-right: 0 !important;
+        width: max-content !important;
+        max-width: calc(100% - 16px) !important;
+        flex-wrap: nowrap !important;
+    }
+
+    #main:has(.header-action-bar.border-bottom) .hover-card {
+        margin-top: -2.5rem !important;
+    }
+
+    #main .hover-card .btn-tertiary:not(.btn-icon):not(.actions-dropdown-item) {
+        border-radius: calc(#{brand.$border-radius-md} - 1px) 0 0 calc(#{brand.$border-radius-md} - 1px) !important;
+    }
+
+    #main .hover-card > .d-flex {
+        min-width: 0 !important;
+        flex: 0 1 auto !important;
+        width: auto !important;
+    }
+
+    #main .hover-card > .hover-button {
+        flex-shrink: 0 !important;
+    }
+
+    #main .hover-card .btn-tertiary:not(.btn-icon):not(.actions-dropdown-item) {
+        width: auto !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+}
+
+// ─── TinyMCE Editor body & placeholder inside iframe ─────────────────────────
+body.mce-content-body,
+body.text-editor,
+.mce-content-body {
+    position: relative !important;
+    margin: 0 !important;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    padding-top: 12px !important;
+    font-family: brand.$font-family-brand-ui !important;
+    font-size: 15px !important;
+    line-height: 24px !important;
+    color: brand.$color-espresso !important;
+
+    // Reset paragraph margin and line-height so caret sits on line 1 and placeholder takes zero space
+    > p {
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 24px !important;
+        font-family: inherit !important;
+        font-size: inherit !important;
+    }
+
+    // Placeholder text inside TinyMCE editor ("Write your post...")
+    // Only display when NOT focused and empty (matches Post title placeholder behavior)
+    &:not(.mce-edit-focus):not(:focus):not(:focus-within) {
+        &[data-mce-placeholder]:not(.mce-visualblocks)::before,
+        &[data-mce-placeholder]::before {
+            content: attr(data-mce-placeholder) !important;
+            position: absolute !important;
+            left: 14px !important;
+            top: 12px !important;
+            line-height: 24px !important;
+            color: brand.$color-clay !important; // Matches Unit & Post title
+            font-family: brand.$font-family-brand-ui !important;
+            font-size: 15px !important;
+            font-weight: 400 !important;
+            font-style: normal !important;
+            opacity: 1 !important;
+            pointer-events: none !important;
+        }
+
+        // Pure CSS fallback if data-mce-placeholder attribute is not populated
+        &:not([data-mce-placeholder]) {
+            > p:first-child:last-child:has(> br:only-child)::before,
+            > p:first-child:last-child:empty::before {
+                content: "Write your post..." !important;
+                position: absolute !important;
+                left: 14px !important;
+                top: 12px !important;
+                line-height: 24px !important;
+                color: brand.$color-clay !important;
+                font-family: brand.$font-family-brand-ui !important;
+                font-size: 15px !important;
+                font-weight: 400 !important;
+                font-style: normal !important;
+                pointer-events: none !important;
+            }
+        }
+    }
+
+    // When focused (like Post title placeholder), hide placeholder immediately
+    &.mce-edit-focus,
+    &:focus,
+    &:focus-within {
+        &[data-mce-placeholder]::before,
+        &::before {
+            content: "" !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            display: none !important;
+        }
+
+        > p::before {
+            content: "" !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            display: none !important;
+        }
+    }
+}
+
+// Format dropdown options (Paragraph, Header 1, Header 2, etc.) in TinyMCE popup menu:
+.tox-tinymce-aux,
+.tox {
+    .tox-menu,
+    .tox-collection--list {
+        .tox-collection__item-label,
+        .tox-collection__item {
+            font-family: brand.$font-family-brand-ui !important;
+            font-size: 15px !important;
+            font-weight: brand.$font-weight-medium !important; // 500 weight from _variables.scss
+        }
+    }
+}
+
+// Help glyph sits inside the status bar, clear of the editor border.
+// The row under the editor is collapsed so it does not add space below the box.
+// Every inner piece is forced to 16px: the platform .btn-icon is 44px, and that
+// extra size is what left the circle sitting on the border.
+.post-form div:has(> .tox-tinymce),
+.post-form .mb-3:has(.tox-tinymce) {
+    position: relative !important;
+
+    .tox-statusbar {
+        box-sizing: border-box !important;
+        height: 40px !important;
+        min-height: 40px !important;
+    }
+
+    .d-flex:has(> .help-icon) {
+        height: 0 !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+    }
+
+    .help-icon,
+    .help-icon.btn,
+    .help-icon.btn-icon {
+        position: absolute !important;
+        right: 12px !important;
+        bottom: 12px !important;
+        z-index: 2;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        width: 16px !important;
+        height: 16px !important;
+        min-width: 16px !important;
+        max-width: 16px !important;
+        min-height: 16px !important;
+        max-height: 16px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 0 !important;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+
+    .help-icon .btn-icon__icon-container,
+    .help-icon .pgn__icon,
+    .help-icon .help-icon-size,
+    .help-icon svg {
+        position: static !important;
+        inset: auto !important;
+        top: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        left: auto !important;
+        display: block !important;
+        box-sizing: border-box !important;
+        width: 16px !important;
+        height: 16px !important;
+        min-width: 16px !important;
+        max-width: 16px !important;
+        min-height: 16px !important;
+        max-height: 16px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        color: brand.$color-clay !important;
+        fill: currentColor !important;
+    }
+}
+
+// Add-a-post form. One treatment for the discussions page and the unit
+// iframe. Included under both selectors because the iframe rules earlier in
+// this file are more specific than `#main .post-form` alone.
+@mixin ds-post-form-refine {
+    // 1. Discussion / Question: one row, icon beside label, 44px
+    .d-flex.flex-row.flex-wrap:has(label[for^="post-type-"]) {
+        flex-wrap: nowrap !important;
+        gap: 12px !important;
+        margin-bottom: 4px !important;
+
+        > label[for^="post-type-"] {
+            flex: 1 1 0 !important;
+            min-width: 0 !important;
+            margin: 0 !important;
+
+            .card {
+                width: 100% !important;
+                height: 44px !important;
+                min-height: 44px !important;
+                max-height: 44px !important;
+                border-radius: brand.$border-radius-md !important;
+                box-shadow: none !important;
+                overflow: hidden !important;
+            }
+
+            .card.border-light-400-2,
+            .card:not(.border-primary-500-2) {
+                border: 1px solid brand.$color-dusk !important;
+                background: brand.$color-white !important;
+            }
+
+            .card.border-primary-500-2 {
+                border: 1.5px solid brand.$color-bark !important;
+                background: brand.$color-sand !important;
+            }
+
+            .pgn__card-section,
+            .px-4.py-3,
+            .d-flex.flex-column {
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 8px !important;
+                height: 100% !important;
+                padding: 0 12px !important;
+                margin: 0 !important;
+            }
+
+            .text-primary-300,
+            .text-gray-700 {
+                margin: 0 !important;
+                line-height: 1 !important;
+            }
+
+            svg {
+                width: 18px !important;
+                height: 18px !important;
+                display: block !important;
+            }
+        }
+    }
+
+    // Editor shares the field border. Clip to the radius so the toolbar and
+    // status lines stop at the curve instead of running through the corners.
+    .tox.tox-tinymce,
+    .tox-tinymce {
+        border: 1px solid brand.$color-dusk !important;
+        border-radius: brand.$border-radius-md !important;
+        background: brand.$color-white !important;
+        overflow: hidden !important;
+
+        .tox-editor-header {
+            border-radius: brand.$border-radius-md brand.$border-radius-md 0 0;
+            overflow: hidden;
+        }
+
+        .tox-toolbar:not(.tox-toolbar__overflow),
+        .tox-toolbar__primary {
+            background: brand.$color-white !important;
+            border-bottom: 1px solid brand.$color-dusk !important;
+        }
+
+        .tox-toolbar__overflow {
+            background: brand.$color-white !important;
+            border: 0 !important;
+            border-top: 1px solid brand.$color-dusk !important;
+            border-left: 1px solid brand.$color-dusk !important;
+            box-shadow: none !important;
+        }
+
+        .tox-toolbar__overflow .tox-toolbar {
+            background: transparent !important;
+            border: 0 !important;
+            box-shadow: none !important;
+        }
+
+        .tox-toolbar__overflow .tox-toolbar__group {
+            background: brand.$color-white !important;
+            border: 0 !important;
+            border-right: 1px solid brand.$color-dusk !important;
+            border-bottom: 1px solid brand.$color-dusk !important;
+            box-shadow: none !important;
+            margin: 0 !important;
+        }
+
+        .tox-statusbar {
+            background: brand.$color-white !important;
+            border-top: 1px solid brand.$color-dusk !important;
+            border-radius: 0 0 brand.$border-radius-md brand.$border-radius-md;
+            overflow: hidden;
+        }
+
+        .tox-statusbar__path {
+            display: none !important;
+        }
+
+        .tox-statusbar__path,
+        .tox-statusbar__path-item,
+        .tox-statusbar__wordcount,
+        .tox-statusbar__branding,
+        .tox-statusbar__branding a {
+            color: brand.$color-stone !important;
+            font-size: 12px !important;
+        }
+    }
+
+    // 4. Preview under the editor, on the left. Checkboxes left, buttons right.
+    flex-flow: row wrap !important;
+    align-items: center !important;
+    align-content: flex-start !important;
+
+    > * {
+        flex: 1 0 100% !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    > div:has(.tox-tinymce),
+    > .mb-3:has(.tox-tinymce) {
+        flex: 1 0 100% !important;
+        min-height: 220px !important;
+    }
+
+    div:has(> [data-testid="show-preview-button"]) {
+        flex: 1 0 100% !important;
+        display: flex !important;
+        justify-content: flex-start !important;
+        margin: 4px 0 0 !important;
+    }
+
+    [data-testid="show-preview-button"] {
+        color: brand.$color-deep-saffron !important;
+        font-size: 14px !important;
+        font-weight: brand.$font-weight-medium !important;
+        text-decoration: none !important;
+        padding: 0 !important;
+
+        &::before {
+            content: "";
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin-right: 6px;
+            vertical-align: -3px;
+            background: currentColor;
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+            -webkit-mask-size: contain;
+            mask-size: contain;
+        }
+    }
+
+    > .d-flex.flex-row.mt-n4 {
+        flex: 1 1 280px !important;
+        width: auto !important;
+        max-width: none !important;
+        margin-top: 12px !important;
+    }
+
+    > .d-flex.justify-content-end:not(:has([data-testid="show-preview-button"])) {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        max-width: none !important;
+        margin-left: auto !important;
+        margin-top: $ds-space-22 !important;
+        gap: brand.$spacing-2 !important;
+    }
+}
+
+#main .post-form {
+    @include ds-post-form-refine;
+}
+
+#main:has(.header-action-bar.border-bottom) .post-form {
+    @include ds-post-form-refine;
+}
+
+// 16px between the heading, type selector, topic, title, and editor.
+// The unit sidebar does not stretch the editor, so Cancel and Submit stay
+// one step below the checkboxes instead of being pushed to the bottom.
+#main .post-form {
+    > h4,
+    > h4.mb-4 {
+        margin-bottom: brand.$spacing-4 !important;
+    }
+
+    > .d-flex.flex-row.justify-content-between {
+        margin-top: brand.$spacing-4 !important;
+        margin-bottom: brand.$spacing-4 !important;
+    }
+
+    > .mb-3,
+    > div:has(.tox-tinymce) {
+        margin-bottom: brand.$spacing-4 !important;
+    }
+}
+
+#main:has(.header-action-bar.border-bottom) .post-form {
+    min-height: 0 !important;
+    flex: 0 1 auto !important;
+    justify-content: flex-start !important;
+
+    > div:has(.tox-tinymce),
+    > .mb-3:has(.tox-tinymce) {
+        flex: 0 0 auto !important;
+    }
+}
+
+// Cap the type cards on the wide discussions page only. A course page is
+// often wider than 768px while its discussion sidebar is still narrow, so
+// the sidebar keeps a flexible width.
+@media (min-width: 768px) {
+    #main:not(:has(.header-action-bar.border-bottom)) .post-form .d-flex.flex-row.flex-wrap:has(label[for^="post-type-"]) > label[for^="post-type-"] {
+        flex: 0 1 250px !important;
+        max-width: 250px !important;
+    }
+}
+

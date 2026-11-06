@@ -32,7 +32,7 @@ $learning-sidebar-width: 300px;
 $learning-sidebar-width-wide: 320px;
 $learning-outline-tray-width: 340px;
 $learning-outline-tray-width-narrow: 280px;
-$learning-side-panel-width: 380px;
+$learning-side-panel-width: 45rem;
 $learning-control-size: 40px;
 
 // Course home and the unit page drop to one column at or below this width.
@@ -502,20 +502,80 @@ h1, h2, h3, h4, h5, h6,
         }
     }
 
-    // "More..." (tabs that don't fit on narrow screens): a tab like the rest,
-    // not Paragon's underlined link button. Its ::after is Paragon's dropdown
-    // caret, which the tab underline above turns into a stray mark, so it is
-    // dropped; the open state shows in the label colour.
-    .nav-underline-tabs .dropdown-toggle.nav-link {
-        box-shadow: none !important;
-        text-decoration: none !important;
+    // "More" overflow dropdown tab: same saffron underline as the other course tabs.
+    .nav-underline-tabs > div.nav-item,
+    .nav-underline-tabs > .nav-item:has(.dropdown) {
+        position: relative !important;
+        display: flex !important;
+        align-items: stretch !important;
+        height: 100% !important;
 
-        &::after {
-            display: none;
+        .dropdown {
+            display: flex !important;
+            align-items: stretch !important;
+            height: 100% !important;
         }
 
-        &[aria-expanded="true"] {
-            color: brand.$text-color !important;
+        .dropdown-toggle.nav-link {
+            position: relative !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            min-height: 0 !important;
+            padding: brand.$spacing-4 14px 15px !important;
+            border: 0 !important;
+            outline: none !important;
+            background: transparent !important;
+            color: brand.$text-color-primary !important;
+            font-family: brand.$font-family-brand-ui !important;
+            font-size: 14.5px !important;
+            font-weight: brand.$font-weight-medium !important;
+            line-height: brand.$line-height-caption !important;
+            text-decoration: none !important;
+            box-shadow: none !important;
+
+            // Paragon's caret is hidden so no stray mark shows under the label.
+            &::after {
+                display: none !important;
+            }
+
+            &:hover,
+            &:focus,
+            &:focus-visible,
+            &[aria-expanded="true"] {
+                color: brand.$text-color !important;
+                text-decoration: none !important;
+                outline: none !important;
+                border: 0 !important;
+                background: transparent !important;
+            }
+
+            &[aria-expanded="true"] {
+                font-weight: brand.$font-weight-semibold !important;
+            }
+        }
+
+        // Orange bottom bar: sits at the bottom of the tabs bar
+        &::after {
+            content: "" !important;
+            position: absolute !important;
+            right: 14px !important;
+            bottom: 0 !important;
+            left: 14px !important;
+            height: 2.5px !important;
+            border: 0 !important;
+            border-radius: 2px !important;
+            background: brand.$accent !important;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.18s ease-out;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        &:hover::after,
+        &:focus-within::after,
+        &:has([aria-expanded="true"])::after {
+            transform: scaleX(1) !important;
         }
     }
 
@@ -1173,7 +1233,7 @@ body .pgn__checkpoint {
         }
     }
 
-    // Keeps the iframe 8px in from the card edge, as before the padding change.
+    // Pulls the iframe out past the card padding so it sits close to the card edge.
     @media (min-width: 830px) {
         .unit-iframe-wrapper {
             margin-right: -(brand.$spacing-6);
@@ -1474,6 +1534,12 @@ body .pgn__checkpoint {
         box-shadow: $learning-card-shadow;
     }
 
+    // The discussions iframe hides its empty pane below about 768px.
+    // 800px leaves room for this card's border so the iframe itself clears that line.
+    #course-sidebar:not(.fixed-top):has(.discussions-sidebar-frame) {
+        width: 800px !important;
+    }
+
     .discussions-sidebar-frame {
         border-radius: ($learning-card-radius - 1px);
     }
@@ -1566,7 +1632,9 @@ body .pgn__checkpoint {
     }
 
     // A discussion needs the full height; the other panels fit their content.
+    // Width matches the docked discussions panel so the empty-pane button can mount.
     #course-sidebar.fixed-top:has(.discussions-sidebar-frame) {
+        width: min(800px, calc(100vw - 32px)) !important;
         height: calc(100dvh - #{brand.$spacing-16} - 32px) !important;
     }
 
