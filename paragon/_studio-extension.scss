@@ -1573,3 +1573,408 @@ $recording-voice-colours: (
     color: brand.$text-color-muted;
     text-align: center;
 }
+
+// The next step under the transcript ("Suggest a course"), kept in view at the bottom while reading.
+.recording-transcript__next {
+    position: sticky;
+    z-index: 2;
+    bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: brand.$spacing-3;
+    padding: brand.$spacing-3 0;
+    border-top: 1px solid brand.$color-dusk;
+    background: brand.$color-white;
+
+    .recording-transcript__error {
+        flex-basis: 100%;
+    }
+}
+
+.recording-transcript__next-text {
+    flex: 1 1 320px;
+    margin: 0;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+}
+
+
+// ----------------------------------------------------------------------------
+// Shape your course (src/course-from-recording/shape-course/ShapeCourseScreen.tsx)
+// Design step 6: each section as a bordered group of lesson rows; a lesson opens to edit its summary,
+// key points and questions. The footer (count, saved, review tick, Create) stays in view.
+// ----------------------------------------------------------------------------
+
+.recording-shape {
+    @extend %recording-card;
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-6;
+
+    // Tibetan text in the boxes: a little larger, with taller lines.
+    .form-control[lang="bo"] {
+        font-size: 1.0625rem;
+        line-height: 1.7;
+    }
+}
+
+.recording-shape__title {
+    @extend %recording-screen-title;
+    margin-bottom: brand.$spacing-1;
+}
+
+.recording-shape__intro {
+    margin: 0;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-shape__section {
+    overflow: hidden;
+    border: 1px solid brand.$color-dusk;
+    border-radius: brand.$border-radius-md;
+}
+
+.recording-shape__section-head {
+    margin: 0;
+    padding: brand.$spacing-3 brand.$spacing-4;
+    border-bottom: 1px solid brand.$color-dusk;
+    background: brand.$color-parchment;
+}
+
+.recording-shape__section-label {
+    margin-bottom: 2px;
+    color: brand.$text-color-muted;
+    font-size: 0.75rem;
+    font-weight: brand.$font-weight-semibold;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.recording-shape__section-title.form-control {
+    background: brand.$color-white;
+    font-weight: brand.$font-weight-semibold;
+}
+
+.recording-shape__lessons {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.recording-shape__lesson {
+    padding: brand.$spacing-3 brand.$spacing-4;
+    border-top: 1px solid color.mix(brand.$color-dusk, brand.$color-white, 60%);
+
+    &:first-child {
+        border-top: 0;
+    }
+
+    // Switched off: still there to switch back on, but stepped back.
+    &--off {
+        .recording-shape__lesson-title,
+        .recording-shape__minutes,
+        .recording-shape__preview {
+            opacity: 0.5;
+        }
+    }
+}
+
+.recording-shape__lesson-head {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-3;
+}
+
+.recording-shape__include {
+    flex: none;
+    margin: 0;
+}
+
+.recording-shape__lesson-title {
+    flex: 1;
+    min-width: 0;
+}
+
+.recording-shape__minutes {
+    flex: none;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+    font-variant-numeric: tabular-nums;
+}
+
+// The summary under a closed lesson, at most two lines.
+.recording-shape__preview {
+    display: -webkit-box;
+    margin: brand.$spacing-1 0 0 brand.$spacing-8;
+    overflow: hidden;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+    line-height: 1.6;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.recording-shape__details {
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-4;
+    margin: brand.$spacing-3 0 brand.$spacing-1 brand.$spacing-8;
+    padding: brand.$spacing-4;
+    border-radius: brand.$border-radius-md;
+    background: brand.$color-parchment;
+
+    @media (max-width: 640px) {
+        margin-left: 0;
+    }
+}
+
+.recording-shape__group {
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-2;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.recording-shape__legend {
+    margin-bottom: brand.$spacing-1;
+    color: brand.$color-espresso;
+    font-size: brand.$font-size-caption;
+    font-weight: brand.$font-weight-semibold;
+}
+
+.recording-shape__item {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-2;
+
+    .form-control {
+        flex: 1;
+        background: brand.$color-white;
+    }
+}
+
+.recording-shape__add.btn-link {
+    align-self: flex-start;
+    padding: 0;
+    color: brand.$color-deep-saffron;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-shape__question {
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-2;
+    padding: brand.$spacing-3;
+    border: 1px solid brand.$color-dusk;
+    border-radius: brand.$border-radius-md;
+    background: brand.$color-white;
+}
+
+.recording-shape__options {
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-1;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+// The radio button marks the right answer.
+.recording-shape__option {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-2;
+
+    input[type="radio"] {
+        flex: none;
+        width: 18px;
+        height: 18px;
+        accent-color: brand.$color-deep-saffron;
+    }
+
+    .form-control {
+        flex: 1;
+    }
+}
+
+.recording-shape__footer {
+    position: sticky;
+    z-index: 2;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-3;
+    padding: brand.$spacing-4 0 brand.$spacing-2;
+    border-top: 1px solid brand.$color-dusk;
+    background: brand.$color-white;
+}
+
+.recording-shape__status {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: brand.$spacing-2;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-shape__count {
+    color: brand.$color-espresso;
+    font-weight: brand.$font-weight-medium;
+}
+
+.recording-shape__saved {
+    color: brand.$text-color-muted;
+
+    &--problem {
+        color: brand.$color-danger;
+    }
+}
+
+.recording-shape__approved,
+.recording-shape__alert {
+    margin: 0;
+}
+
+.recording-shape__actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+// ----------------------------------------------------------------------------
+// Draft course ready (src/course-from-recording/course-ready/CourseReadyScreen.tsx)
+// Design step 7: what was added, as the course outline shows it, and the way there.
+// ----------------------------------------------------------------------------
+
+.recording-ready {
+    @extend %recording-card;
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-4;
+}
+
+.recording-ready__header {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-3;
+}
+
+.recording-ready__icon {
+    flex: none;
+    width: 32px;
+    height: 32px;
+    color: brand.$success-text;
+}
+
+.recording-ready__title {
+    @extend %recording-screen-title;
+}
+
+.recording-ready__intro,
+.recording-ready__note {
+    margin: 0;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-ready__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: brand.$spacing-3;
+    margin: 0;
+}
+
+.recording-ready__stat {
+    padding: brand.$spacing-3 brand.$spacing-4;
+    border-radius: brand.$border-radius-md;
+    background: brand.$color-parchment;
+
+    dt {
+        color: brand.$text-color-muted;
+        font-size: brand.$font-size-caption;
+        font-weight: brand.$font-weight-body;
+    }
+
+    dd {
+        margin: 0;
+        color: brand.$color-espresso;
+        font-size: brand.$font-size-h4;
+        font-weight: brand.$font-weight-semibold;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+.recording-ready__heading {
+    margin: brand.$spacing-2 0 0;
+    color: brand.$color-espresso;
+    font-size: brand.$font-size-body;
+    font-weight: brand.$font-weight-semibold;
+}
+
+.recording-ready__outline {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid brand.$color-dusk;
+    border-radius: brand.$border-radius-md;
+    list-style: none;
+}
+
+.recording-ready__section + .recording-ready__section {
+    border-top: 1px solid brand.$color-dusk;
+}
+
+.recording-ready__section-title {
+    display: block;
+    padding: brand.$spacing-2 brand.$spacing-4;
+    background: brand.$color-parchment;
+    color: brand.$color-espresso;
+    font-weight: brand.$font-weight-semibold;
+}
+
+.recording-ready__lessons {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.recording-ready__lesson {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-3;
+    padding: brand.$spacing-2 brand.$spacing-4;
+    border-top: 1px solid color.mix(brand.$color-dusk, brand.$color-white, 60%);
+}
+
+.recording-ready__lesson-title {
+    flex: 1;
+    min-width: 0;
+    color: brand.$color-espresso;
+}
+
+.recording-ready__lesson-meta {
+    flex: none;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-ready__badge {
+    flex: none;
+    padding: 2px 8px;
+    border-radius: brand.$border-radius-full;
+    background: brand.$warning-bg;
+    color: brand.$warning-text;
+    font-size: 0.75rem;
+    font-weight: brand.$font-weight-medium;
+}
+
+.recording-ready__actions {
+    display: flex;
+    justify-content: flex-end;
+}
