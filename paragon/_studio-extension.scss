@@ -1631,6 +1631,18 @@ $recording-voice-colours: (
     font-size: brand.$font-size-caption;
 }
 
+// All the sections, in one fieldset that locks them while the course is being created: no box of its own,
+// and the same space between sections as between the screen's other parts.
+.recording-shape__sections {
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-6;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
 .recording-shape__section {
     overflow: hidden;
     border: 1px solid brand.$color-dusk;
