@@ -1466,6 +1466,8 @@
 // "or build it yourself": a short rule on each side of the text, then the
 // manual buttons at their natural width, side by side and centred, in a lighter
 // outline than _overrides.scss's 2px one so they sit below "Create with a tool".
+// The outline page keeps Open edX's own btn-primary on them, so the border style
+// (which _overrides.scss's btn-primary removes) and the pressed state are set here.
 .outline-empty-placeholder__manual {
     display: flex;
     flex-direction: column;
@@ -1486,13 +1488,15 @@
         margin-top: 0 !important;
         padding: brand.$spacing-2 brand.$spacing-4;
         border-width: 1px !important;
+        border-style: solid !important;
         border-color: brand.$color-bark !important;
         color: brand.$color-deep-brown !important;
         background: brand.$color-white !important;
         font-size: brand.$font-size-caption;
 
-        &:hover:not(:disabled):not(.disabled) {
-            border-color: brand.$color-deep-saffron !important;
+        &:hover:not(:disabled):not(.disabled),
+        &:active:not(:disabled):not(.disabled) {
+            border: 1px solid brand.$color-deep-saffron !important;
             color: brand.$color-deep-saffron !important;
             background: brand.$color-white !important;
         }
