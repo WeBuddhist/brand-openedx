@@ -1,4 +1,1992 @@
 // Studio Extension MFE-specific overrides.
+@use "sass:color";
 @use "./variables" as brand;
 @import "./overrides";
 @import "./common/studio-header";
+
+
+// ============================================================================
+// Course from a teaching recording (src/course-from-recording/)
+// ============================================================================
+
+// Every screen of the tool sits in the same card, so moving from step to step only changes what is in it.
+%recording-card {
+    padding: brand.$spacing-6 brand.$spacing-8;
+    border: 1px solid brand.$color-dusk;
+    border-radius: brand.$border-radius-lg;
+    background: brand.$color-white;
+    color: brand.$color-espresso;
+    font-family: brand.$font-family-brand-ui;
+
+    @media (max-width: 768px) {
+        padding: brand.$spacing-4;
+    }
+}
+
+// Every screen's title ("Who is speaking?", "Check the written teaching", ...): one size and font.
+%recording-screen-title {
+    margin: 0;
+    color: brand.$color-espresso;
+    font-family: brand.$font-family-brand-display;
+    font-size: brand.$font-size-h3;
+    font-weight: brand.$font-weight-semibold;
+    line-height: brand.$line-height-h3;
+}
+
+.course-from-recording {
+    padding-top: brand.$spacing-8;
+    padding-bottom: brand.$spacing-12;
+
+    // One column for the whole tool: the step bar and every screen share its width.
+    &.container-lg {
+        max-width: 880px;
+    }
+}
+
+.course-from-recording__title {
+    margin-bottom: brand.$spacing-2;
+    color: brand.$color-espresso;
+    font-family: brand.$font-family-brand-ui;
+    font-size: brand.$font-size-h3;
+    font-weight: brand.$font-weight-semibold;
+    line-height: brand.$line-height-h3;
+}
+
+// The course line, with "Start over" at its right on every step after the upload.
+.course-from-recording__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: brand.$spacing-2;
+    margin-bottom: brand.$spacing-6;
+}
+
+.course-from-recording__course {
+    margin: 0;
+    color: brand.$text-color-muted;
+    font-family: brand.$font-family-brand-ui;
+    font-size: brand.$font-size-caption;
+}
+
+// Quiet, so it isn't clicked by accident; it opens a confirmation anyway.
+.course-from-recording__start-over.btn-link {
+    padding: 2px 4px;
+    color: brand.$text-color-muted;
+    font-family: brand.$font-family-brand-ui;
+    font-size: brand.$font-size-caption;
+    text-decoration: none;
+
+    .pgn__icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    &:hover {
+        color: brand.$color-deep-saffron;
+        text-decoration: underline;
+    }
+}
+
+.course-from-recording__placeholder {
+    color: brand.$text-color-muted;
+    font-family: brand.$font-family-brand-ui;
+    font-size: brand.$font-size-caption + 2;
+}
+
+
+// ----------------------------------------------------------------------------
+// Step 1: upload (src/course-from-recording/upload/UploadScreen.tsx)
+// ----------------------------------------------------------------------------
+
+.recording-upload {
+    @extend %recording-card;
+}
+
+.recording-upload__alert {
+    margin-bottom: brand.$spacing-4;
+}
+
+.recording-upload__section + .recording-upload__section {
+    margin-top: brand.$spacing-6;
+}
+
+.recording-upload__section--footer {
+    padding-top: brand.$spacing-4;
+    border-top: 1px solid brand.$color-dusk;
+}
+
+.recording-upload__heading {
+    margin-bottom: brand.$spacing-3;
+    color: brand.$color-espresso;
+    font-size: brand.$font-size-h4;
+    font-weight: brand.$font-weight-semibold;
+    line-height: brand.$line-height-h4;
+}
+
+.recording-upload__drop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: brand.$spacing-1;
+    padding: brand.$spacing-8 brand.$spacing-4;
+    border: 1px dashed brand.$color-bark;
+    border-radius: brand.$border-radius-md;
+    background: brand.$color-parchment;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color brand.$interaction-transition, background-color brand.$interaction-transition;
+
+    &:hover,
+    &--active {
+        border-color: brand.$color-saffron;
+        background: brand.$color-sand;
+    }
+
+    &:focus-visible {
+        outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+        outline-offset: brand.$focus-ring-offset;
+    }
+
+    &--invalid {
+        border-color: brand.$color-danger;
+    }
+}
+
+.recording-upload__drop-icon {
+    width: 32px;
+    height: 32px;
+    color: brand.$color-deep-saffron;
+}
+
+.recording-upload__drop-prompt {
+    color: brand.$color-espresso;
+    font-size: brand.$font-size-body;
+    font-weight: brand.$font-weight-medium;
+}
+
+.recording-upload__drop-rules {
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-upload__file {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-3;
+    padding: brand.$spacing-3 brand.$spacing-4;
+    border: 1px solid brand.$color-dusk;
+    border-radius: brand.$border-radius-md;
+    background: brand.$color-parchment;
+}
+
+// A recording kept when starting over: not uploaded again.
+.recording-upload__file--kept .recording-upload__replace.btn-link {
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 0;
+    color: brand.$color-deep-saffron;
+    font-size: brand.$font-size-caption;
+}
+
+// After starting over: the details from last time are filled in.
+.recording-upload__again {
+    margin-bottom: brand.$spacing-4;
+    padding: brand.$spacing-3 brand.$spacing-4;
+    border-left: 3px solid brand.$color-saffron;
+    border-radius: brand.$border-radius-md;
+    background: brand.$color-parchment;
+    color: brand.$color-espresso;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-upload__file-icon {
+    flex-shrink: 0;
+    color: brand.$color-deep-saffron;
+}
+
+.recording-upload__file-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.recording-upload__file-name {
+    overflow: hidden;
+    color: brand.$color-espresso;
+    font-weight: brand.$font-weight-medium;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.recording-upload__file-size,
+.recording-upload__optional,
+.recording-upload__help,
+.recording-upload__note,
+.recording-upload__progress-hint {
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+    font-weight: brand.$font-weight-body;
+}
+
+.recording-upload__help {
+    margin: brand.$spacing-2 0 0;
+}
+
+.recording-upload__note {
+    margin: brand.$spacing-2 0 brand.$spacing-4;
+}
+
+.recording-upload__error {
+    margin: brand.$spacing-2 0 0;
+    color: brand.$color-danger;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-upload__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    column-gap: brand.$spacing-4;
+
+    @media (min-width: 769px) {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.recording-upload__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: brand.$spacing-2;
+}
+
+.recording-upload__progress {
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-2;
+
+    .progress-bar {
+        background-color: brand.$color-saffron;
+    }
+}
+
+.recording-upload__progress-label {
+    color: brand.$color-espresso;
+    font-weight: brand.$font-weight-medium;
+}
+
+
+// ----------------------------------------------------------------------------
+// Processing stopped (src/course-from-recording/failed/FailedScreen.tsx)
+// ----------------------------------------------------------------------------
+
+.recording-failed {
+    @extend %recording-card;
+}
+
+.recording-failed__alert {
+    margin-bottom: brand.$spacing-4;
+}
+
+.recording-failed__header {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-2;
+    margin-bottom: brand.$spacing-3;
+}
+
+.recording-failed__icon {
+    color: brand.$color-danger;
+}
+
+.recording-failed__heading {
+    @extend %recording-screen-title;
+}
+
+.recording-failed__file,
+.recording-failed__reason {
+    margin-bottom: brand.$spacing-2;
+    color: brand.$color-espresso;
+}
+
+.recording-failed__help {
+    margin-bottom: brand.$spacing-4;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-failed__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: brand.$spacing-2;
+}
+
+
+
+// ----------------------------------------------------------------------------
+// Step bar at the top of the tool (src/course-from-recording/ToolSteps.tsx)
+// ----------------------------------------------------------------------------
+
+.recording-steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: brand.$spacing-2;
+    margin: 0 0 brand.$spacing-6;
+    padding: 0;
+    list-style: none;
+    font-family: brand.$font-family-brand-ui;
+}
+
+.recording-steps__step {
+    display: inline-flex;
+    align-items: center;
+    gap: brand.$spacing-2;
+    padding: 6px 14px;
+    border: 1px solid brand.$color-dusk;
+    border-radius: brand.$border-radius-full;
+    background: brand.$color-white;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-steps__number {
+    display: inline-flex;
+    align-items: center;
+    font-weight: brand.$font-weight-semibold;
+}
+
+.recording-steps__check {
+    width: 14px;
+    height: 14px;
+}
+
+.recording-steps__step--current {
+    border-color: brand.$color-deep-saffron;
+    background: brand.$color-deep-saffron;
+    color: brand.$color-white;
+}
+
+.recording-steps__step--done {
+    border-color: brand.$success-bg;
+    background: brand.$success-bg;
+    color: brand.$success-text;
+}
+
+
+// ----------------------------------------------------------------------------
+// Processing (src/course-from-recording/progress/ProgressScreen.tsx)
+// ----------------------------------------------------------------------------
+
+.recording-processing {
+    @extend %recording-card;
+}
+
+.recording-processing__header {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-4;
+    margin-bottom: brand.$spacing-6;
+}
+
+// Four bars rising and falling like a sound level: something is being worked on.
+.recording-processing__activity {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    width: 44px;
+    height: 44px;
+    border-radius: brand.$border-radius-md;
+    background: brand.$color-parchment;
+
+    span {
+        width: 4px;
+        height: 18px;
+        border-radius: 2px;
+        background: brand.$color-saffron;
+        transform-origin: center;
+        animation: recording-processing-level 1.1s ease-in-out infinite;
+
+        &:nth-child(2) { animation-delay: -0.85s; }
+        &:nth-child(3) { animation-delay: -0.55s; }
+        &:nth-child(4) { animation-delay: -0.25s; }
+    }
+}
+
+// Waiting in the queue: the bars keep moving, slower and quieter, so the page never looks frozen.
+.recording-processing--queued .recording-processing__activity span {
+    background: brand.$color-bark;
+    animation-duration: 2.4s;
+}
+
+@keyframes recording-processing-level {
+    0%, 100% { transform: scaleY(0.35); }
+    50% { transform: scaleY(1); }
+}
+
+.recording-processing__heading {
+    min-width: 0;
+}
+
+.recording-processing__title {
+    @extend %recording-screen-title;
+}
+
+.recording-processing__recording {
+    margin: 2px 0 0;
+    overflow: hidden;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.recording-processing__queued {
+    margin: 0 0 brand.$spacing-6;
+    color: brand.$color-espresso;
+}
+
+.recording-processing__progress {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-3;
+    margin-bottom: brand.$spacing-6;
+}
+
+.recording-processing__bar {
+    position: relative;
+    flex: 1;
+    height: 8px;
+    overflow: hidden;
+    border-radius: brand.$border-radius-full;
+    background: brand.$color-sand;
+}
+
+// The width is set by the screen from the step's progress.
+.recording-processing__bar-fill {
+    height: 100%;
+    border-radius: brand.$border-radius-full;
+    background: brand.$color-saffron;
+    transition: width 0.6s ease-out;
+}
+
+// Before the first progress arrives: a short bar sliding across.
+.recording-processing__bar--starting .recording-processing__bar-fill {
+    position: absolute;
+    width: 30%;
+    animation: recording-processing-slide 1.4s ease-in-out infinite;
+}
+
+@keyframes recording-processing-slide {
+    from { left: -30%; }
+    to { left: 100%; }
+}
+
+.recording-processing__percent {
+    flex: 0 0 auto;
+    min-width: 4.5em;
+    color: brand.$color-espresso;
+    font-size: brand.$font-size-caption;
+    font-variant-numeric: tabular-nums;
+    font-weight: brand.$font-weight-medium;
+    text-align: right;
+}
+
+.recording-processing__stages {
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-2;
+    margin: 0 0 brand.$spacing-6;
+    padding: 0;
+    list-style: none;
+}
+
+.recording-processing__stage {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-3;
+    font-size: brand.$font-size-body;
+}
+
+.recording-processing__marker {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.recording-processing__check {
+    width: 14px;
+    height: 14px;
+    color: brand.$color-white;
+}
+
+.recording-processing__stage--done {
+    .recording-processing__marker {
+        background: brand.$success-text;
+    }
+
+    .recording-processing__stage-name {
+        color: brand.$color-espresso;
+    }
+}
+
+// The part being worked on: a small turning ring.
+.recording-processing__stage--current {
+    .recording-processing__marker {
+        border: 2px solid brand.$color-sand;
+        border-top-color: brand.$color-saffron;
+        animation: recording-processing-turn 0.9s linear infinite;
+    }
+
+    .recording-processing__stage-name {
+        color: brand.$color-espresso;
+        font-weight: brand.$font-weight-medium;
+    }
+}
+
+@keyframes recording-processing-turn {
+    to { transform: rotate(360deg); }
+}
+
+.recording-processing__stage--pending {
+    .recording-processing__marker::after {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: brand.$color-dusk;
+    }
+
+    .recording-processing__stage-name {
+        color: brand.$text-color-muted;
+    }
+}
+
+.recording-processing__note {
+    display: flex;
+    align-items: flex-start;
+    gap: brand.$spacing-2;
+    margin: 0;
+    padding: brand.$spacing-3 brand.$spacing-4;
+    border-radius: brand.$border-radius-md;
+    background: brand.$color-parchment;
+    color: brand.$color-espresso;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-processing__note-icon {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    color: brand.$color-deep-saffron;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .recording-processing__activity span,
+    .recording-processing__bar--starting .recording-processing__bar-fill,
+    .recording-processing__stage--current .recording-processing__marker {
+        animation: none;
+    }
+}
+
+
+// ----------------------------------------------------------------------------
+// Tag the voices (src/course-from-recording/tag-voices/TagVoicesScreen.tsx)
+// Follows the design's "Choose which parts to keep": a coloured timeline of the recording, then one row
+// per voice with its samples and its tag.
+// ----------------------------------------------------------------------------
+
+// Each voice's colour: a light fill with a strong line and text (timeline blocks, swatches).
+$recording-voice-colours: (
+    0: brand.$color-saffron,
+    1: brand.$color-dharma-teal,
+    2: brand.$color-terracotta,
+    3: brand.$color-stone,
+);
+
+.recording-voices {
+    @extend %recording-card;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.recording-voices__title {
+    @extend %recording-screen-title;
+    margin-bottom: 6px;
+}
+
+.recording-voices__intro {
+    margin: 0;
+    color: brand.$text-color-muted;
+}
+
+// One shared player, driven by the sample buttons.
+.recording-voices__player {
+    display: none;
+}
+
+.recording-voices__timeline {
+    margin: 0;
+}
+
+// One continuous bar, like an audio timeline, rounded only at the ends. Every part takes exactly its share
+// of the width (no gaps, no minimum width, no padding), so the times under the strip line up with it even
+// for a long recording with hundreds of parts; a thin white line drawn inside each part separates them.
+.recording-voices__strip {
+    display: flex;
+    height: 40px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.recording-voices__block {
+    display: flex;
+    flex-basis: 0;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    overflow: hidden;
+    font-size: 0.75rem;
+    font-weight: brand.$font-weight-medium;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: opacity brand.$interaction-transition, background-color brand.$interaction-transition;
+
+    // No one speaking: a light hatch, so it reads as a gap rather than a voice.
+    &--silence {
+        background: repeating-linear-gradient(
+            -45deg,
+            brand.$color-linen 0 5px,
+            brand.$color-dusk 5px 7px
+        );
+        // Darker than the usual muted grey: the stripes behind it are light and dark.
+        color: brand.$color-warm-gray;
+        font-weight: brand.$font-weight-body;
+    }
+
+    // Pale until the voice is tagged, then its colour deepens. The names stay at 4.5:1 contrast or more.
+    @each $index, $colour in $recording-voice-colours {
+        &--#{$index} {
+            background: color.mix($colour, brand.$color-white, 16%);
+            color: color.mix($colour, #000, 60%);
+        }
+
+        &--#{$index}.recording-voices__block--tagged {
+            background: color.mix($colour, brand.$color-white, 55%);
+            color: color.mix($colour, #000, 40%);
+        }
+    }
+
+    // While a voice's row is hovered or focused, the rest of the strip steps back.
+    &--dim {
+        opacity: 0.45;
+    }
+
+    & + & {
+        box-shadow: inset 2px 0 0 brand.$color-white;
+    }
+}
+
+.recording-voices__block-name {
+    padding: 0 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+// With the waveform: a taller strip with the sound centred in each part, and each part's name above
+// the strip, over the part's start. The strip lets the names out, so its ends are rounded per part.
+// Bars are lighter until the voice is tagged, then deepen; silence is a thin grey line.
+.recording-voices__strip--wave {
+    height: 64px;
+    margin-top: 22px;
+    overflow: visible;
+
+    .recording-voices__block {
+        position: relative;
+        align-items: stretch;
+        padding: 6px 0;
+        overflow: visible;
+
+        &:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        &:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        &--silence {
+            background: brand.$color-linen;
+        }
+    }
+
+    .recording-voices__block-name {
+        position: absolute;
+        bottom: calc(100% + 4px);
+        left: 0;
+        max-width: 100%;
+        padding: 0;
+        line-height: 16px;
+        white-space: nowrap;
+    }
+
+    @each $index, $colour in $recording-voice-colours {
+        .recording-voices__block--#{$index} {
+            background: color.mix($colour, brand.$color-white, 8%);
+            fill: color.mix($colour, brand.$color-white, 70%);
+        }
+
+        .recording-voices__block--#{$index}.recording-voices__block--tagged {
+            background: color.mix($colour, brand.$color-white, 22%);
+            fill: color.mix($colour, #000, 88%);
+        }
+
+        // Above the strip the names are on white: a darker shade of the voice, to stay readable.
+        .recording-voices__block--#{$index} .recording-voices__block-name {
+            color: color.mix($colour, #000, 55%);
+        }
+    }
+
+    .recording-voices__block--silence {
+        fill: brand.$color-dusk;
+
+        .recording-voices__block-name {
+            color: brand.$text-color-muted;
+        }
+    }
+}
+
+.recording-voices__wave {
+    display: block;
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+
+    rect {
+        transition: fill brand.$interaction-transition;
+    }
+}
+
+.recording-voices__axis {
+    position: relative;
+    height: 22px;
+    margin-top: 2px;
+    color: brand.$text-color-muted;
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+}
+
+// A small tick above each time; the first and last align to the bar's ends.
+.recording-voices__tick {
+    position: absolute;
+    top: 0;
+    padding-top: 6px;
+    transform: translateX(-50%);
+    white-space: nowrap;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 1px;
+        height: 4px;
+        background: brand.$color-bark;
+    }
+
+    &:first-child {
+        transform: none;
+
+        &::before { left: 0; }
+    }
+
+    &:last-child {
+        transform: translateX(-100%);
+
+        &::before { left: auto; right: 0; }
+    }
+}
+
+.recording-voices__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+// Each voice on one line: listen (play button) | who it is so far | choose who it is.
+.recording-voices__voice {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) minmax(200px, 240px);
+    align-items: center;
+    column-gap: brand.$spacing-4;
+    row-gap: brand.$spacing-2;
+    padding: brand.$spacing-4 0;
+    border-top: 1px solid brand.$color-dusk;
+
+    &:last-child {
+        border-bottom: 1px solid brand.$color-dusk;
+    }
+
+    @media (max-width: 640px) {
+        grid-template-columns: 44px minmax(0, 1fr);
+
+        .recording-voices__choice {
+            grid-column: 1 / -1;
+        }
+    }
+}
+
+// The play button carries the voice's timeline colour: it is what ties the row to the strip.
+.recording-voices__play {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color brand.$interaction-transition, transform brand.$interaction-transition;
+
+    .pgn__icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    @each $index, $colour in $recording-voice-colours {
+        &--#{$index} {
+            background: color.mix($colour, brand.$color-white, 18%);
+            color: color.mix($colour, #000, 70%);
+
+            &:hover,
+            &[aria-pressed="true"] {
+                background: color.mix($colour, brand.$color-white, 34%);
+            }
+        }
+    }
+
+    &:active {
+        transform: scale(0.96);
+    }
+
+    &:focus-visible {
+        outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+        outline-offset: brand.$focus-ring-offset;
+    }
+}
+
+.recording-voices__info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.recording-voices__name {
+    color: brand.$color-espresso;
+    font-weight: brand.$font-weight-semibold;
+}
+
+.recording-voices__meta {
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+    font-variant-numeric: tabular-nums;
+}
+
+.recording-voices__another {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: brand.$color-deep-saffron;
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+
+    &:hover {
+        color: brand.$color-espresso;
+    }
+}
+
+.recording-voices__choice {
+    min-width: 0;
+}
+
+// "Who is this?": a menu button that looks like a field, and a menu where each choice says what
+// happens to the voice. (A native select can't be styled: its list is drawn by the operating system.)
+.recording-voices__who {
+    width: 100%;
+}
+
+.recording-voices__who-toggle.btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid brand.$color-bark;
+    border-radius: 8px;
+    background: brand.$color-white;
+    box-shadow: none;
+    color: brand.$text-color-muted;
+    font-family: brand.$font-family-brand-ui;
+    font-size: brand.$font-size-body;
+    font-weight: brand.$font-weight-body;
+    text-align: left;
+
+    // The caret.
+    &::after {
+        margin-left: brand.$spacing-2;
+        border-top-color: brand.$color-deep-saffron;
+        color: brand.$color-deep-saffron;
+    }
+
+    &:hover,
+    &:active,
+    &[aria-expanded="true"] {
+        border-color: brand.$color-saffron;
+        background: brand.$color-white;
+        color: brand.$text-color-muted;
+    }
+
+    // No ring when clicked with the mouse; the brand's focus ring (not the default blue) for keyboard users.
+    &:focus,
+    &:active:focus {
+        box-shadow: none;
+        outline: none;
+    }
+
+    &:focus-visible {
+        outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+        outline-offset: brand.$focus-ring-offset;
+    }
+
+    // Once chosen, the answer reads as an answer, not a placeholder.
+    &.recording-voices__who-toggle--chosen {
+        border-color: brand.$color-deep-saffron;
+        background: brand.$color-parchment;
+        color: brand.$color-espresso;
+        font-weight: brand.$font-weight-medium;
+    }
+}
+
+.recording-voices__voice--invalid .recording-voices__who-toggle.btn {
+    border-color: brand.$color-danger;
+}
+
+.recording-voices__who-menu.dropdown-menu {
+    min-width: 100%;
+    margin-top: 4px;
+    padding: 6px;
+    border: 1px solid brand.$color-dusk;
+    border-radius: 10px;
+    background: brand.$color-white;
+    box-shadow: 0 12px 32px rgba(42, 38, 34, 0.12), 0 2px 6px rgba(42, 38, 34, 0.06);
+}
+
+.recording-voices__who-option.dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: brand.$spacing-3;
+    padding: 10px 12px;
+    border-radius: 6px;
+    color: brand.$color-espresso;
+    font-family: brand.$font-family-brand-ui;
+    white-space: normal;
+
+    &:hover,
+    &:focus {
+        background: brand.$color-parchment;
+        color: brand.$color-espresso;
+        outline: none;
+    }
+
+    &:focus-visible {
+        box-shadow: inset 0 0 0 brand.$focus-ring-width brand.$focus-ring-color;
+    }
+
+    // The chosen one: a tick, not Bootstrap's blue fill.
+    &.active,
+    &:active {
+        background: brand.$color-sand;
+        color: brand.$color-espresso;
+    }
+}
+
+.recording-voices__who-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.recording-voices__who-label {
+    font-weight: brand.$font-weight-medium;
+}
+
+.recording-voices__who-outcome {
+    color: brand.$text-color-muted;
+    font-size: 0.8125rem;
+}
+
+.recording-voices__who-check {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    color: brand.$color-deep-saffron;
+}
+
+.recording-voices__error {
+    margin: 6px 0 0;
+    color: brand.$color-danger;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-voices__tip {
+    margin: 0;
+    padding: 14px 16px;
+    border: 1px solid color.mix(brand.$warning-text, brand.$warning-bg, 18%);
+    border-radius: 10px;
+    background: brand.$warning-bg;
+    color: brand.$warning-text;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-voices__alert {
+    margin: 0;
+}
+
+.recording-voices__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 18px;
+    border-top: 1px solid brand.$color-dusk;
+}
+
+.recording-voices__summary {
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+}
+
+
+// ----------------------------------------------------------------------------
+// Start over (src/course-from-recording/start-over/StartOverScreen.tsx)
+// What is deleted (in red: it can't be undone), what was paid for, then the recording to use as two
+// cards. Red is kept for the deletion itself; everything else is in the brand's warm colours.
+// ----------------------------------------------------------------------------
+
+.recording-start-over {
+    @extend %recording-card;
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-6;
+}
+
+.recording-start-over__header {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-4;
+}
+
+.recording-start-over__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: brand.$color-parchment;
+    color: brand.$color-deep-saffron;
+}
+
+.recording-start-over__title {
+    @extend %recording-screen-title;
+}
+
+.recording-start-over__file {
+    margin: 2px 0 0;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+    overflow-wrap: anywhere;
+}
+
+// What starting over deletes, for good.
+.recording-start-over__deleted {
+    padding: brand.$spacing-4 20px;
+    border: 1px solid brand.$color-danger-divider;
+    border-radius: brand.$border-radius-md;
+    background: color.mix(brand.$color-danger, brand.$color-white, 4%);
+}
+
+.recording-start-over__deleted-heading {
+    margin: 0 0 brand.$spacing-2;
+    color: brand.$color-danger-dark;
+    font-size: 0.75rem;
+    font-weight: brand.$font-weight-semibold;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.recording-start-over__deleted-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: brand.$spacing-2;
+    }
+}
+
+.recording-start-over__deleted-icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: brand.$color-danger;
+}
+
+// Money already spent: hard to miss, but not an error.
+.recording-start-over__paid {
+    display: flex;
+    align-items: flex-start;
+    gap: brand.$spacing-2;
+    margin: 0;
+    padding: brand.$spacing-3 brand.$spacing-4;
+    border-radius: brand.$border-radius-md;
+    background: brand.$color-parchment;
+    color: brand.$color-deep-saffron;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-start-over__paid-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: brand.$color-saffron;
+}
+
+.recording-start-over__choice {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.recording-start-over__choice-label {
+    margin-bottom: brand.$spacing-3;
+    color: brand.$color-espresso;
+    font-size: 1rem;
+    font-weight: brand.$font-weight-semibold;
+}
+
+.recording-start-over__cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: brand.$spacing-3;
+
+    @media (max-width: 600px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+// One choice: the whole card is the radio button's label.
+.recording-start-over__card {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: brand.$spacing-3;
+    margin: 0;
+    padding: brand.$spacing-4;
+    border: 1px solid brand.$color-dusk;
+    border-radius: brand.$border-radius-md;
+    background: brand.$color-white;
+    cursor: pointer;
+    transition: border-color brand.$interaction-transition, background-color brand.$interaction-transition,
+        box-shadow brand.$interaction-transition;
+
+    &:hover {
+        border-color: brand.$color-saffron;
+    }
+
+    // Keyboard focus shows on the card (the radio button itself is hidden).
+    &:has(.recording-start-over__card-input:focus-visible) {
+        outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+        outline-offset: brand.$focus-ring-offset;
+    }
+
+    &--selected {
+        border-color: brand.$color-saffron;
+        background: brand.$color-parchment;
+        box-shadow: inset 0 0 0 1px brand.$color-saffron;
+    }
+
+    .recording-start-over__choice:disabled & {
+        cursor: default;
+        opacity: 0.6;
+    }
+}
+
+.recording-start-over__card-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: brand.$border-radius-md;
+    background: brand.$color-linen;
+    color: brand.$color-terracotta;
+
+    .recording-start-over__card--selected & {
+        background: brand.$color-white;
+        color: brand.$color-deep-saffron;
+    }
+}
+
+.recording-start-over__card-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.recording-start-over__card-title {
+    color: brand.$color-espresso;
+    font-weight: brand.$font-weight-semibold;
+}
+
+.recording-start-over__card-help {
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+    line-height: 1.4;
+}
+
+// A tick on the chosen card.
+.recording-start-over__card-check {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    color: brand.$color-saffron;
+    opacity: 0;
+    transition: opacity brand.$interaction-transition;
+
+    .recording-start-over__card--selected & {
+        opacity: 1;
+    }
+}
+
+.recording-start-over__alert {
+    margin: 0;
+}
+
+.recording-start-over__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: brand.$spacing-3;
+    padding-top: 20px;
+    border-top: 1px solid brand.$color-dusk;
+}
+
+.recording-start-over__cancel.btn {
+    color: brand.$color-espresso;
+
+    &:hover {
+        background: brand.$color-linen;
+        color: brand.$color-espresso;
+    }
+}
+
+.recording-start-over__confirm.btn {
+    border-color: brand.$color-danger;
+    background: brand.$color-danger;
+    color: brand.$color-white;
+
+    &:hover,
+    &:focus {
+        border-color: brand.$color-danger-dark;
+        background: brand.$color-danger-dark;
+        color: brand.$color-white;
+    }
+}
+
+
+// ----------------------------------------------------------------------------
+// Check the written teaching (src/course-from-recording/transcript/TranscriptScreen.tsx)
+// Calm, like the rest of Studio: a white card, plain rows with thin dividers, colour only for the line
+// being heard and the lines to check.
+// ----------------------------------------------------------------------------
+
+.recording-transcript {
+    @extend %recording-card;
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-4;
+}
+
+.recording-transcript__title {
+    @extend %recording-screen-title;
+    margin-bottom: brand.$spacing-1;
+}
+
+.recording-transcript__intro {
+    margin: 0;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+}
+
+// The player stays in view while the author reads down the transcript.
+.recording-transcript__player {
+    position: sticky;
+    z-index: 2;
+    top: brand.$spacing-2;
+    width: 100%;
+    height: 40px;
+    // White behind and around it, so the lines scrolling underneath don't show through.
+    background: brand.$color-white;
+    box-shadow: 0 0 0 brand.$spacing-2 brand.$color-white;
+}
+
+.recording-transcript__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: brand.$spacing-2 brand.$spacing-6;
+    padding-bottom: brand.$spacing-3;
+    border-bottom: 1px solid brand.$color-dusk;
+}
+
+.recording-transcript__summary {
+    margin-right: auto;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-transcript__filter {
+    margin: 0;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-transcript__lines {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+// One line: its time, the text (with any note below it), and Correct.
+.recording-transcript__line {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr) auto;
+    gap: brand.$spacing-3;
+    align-items: start;
+    // The same left padding on every line, so the times form one straight column whether or not a line
+    // carries the mark below.
+    padding: brand.$spacing-3 0 brand.$spacing-3 brand.$spacing-3;
+    border-bottom: 1px solid color.mix(brand.$color-dusk, brand.$color-white, 60%);
+
+    // A line the computer was unsure about: a thin saffron mark at the left.
+    &--check {
+        box-shadow: inset 3px 0 0 brand.$color-saffron;
+    }
+
+    // The line being heard.
+    &--playing {
+        background: brand.$color-parchment;
+    }
+
+}
+
+// Edit, on every line: quiet, so a long transcript doesn't turn into a column of buttons.
+.recording-transcript__correct.btn {
+    padding: 2px brand.$spacing-2;
+    color: brand.$color-deep-saffron;
+    font-size: brand.$font-size-caption;
+    white-space: nowrap;
+
+    .pgn__icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    &:hover {
+        background: brand.$color-parchment;
+        color: brand.$color-deep-saffron;
+    }
+
+    &:disabled {
+        opacity: 0.4;
+    }
+}
+
+// A part that was not written down: one short grey row.
+.recording-transcript__line--skipped {
+    grid-template-columns: 92px minmax(0, 1fr);
+    align-items: center;
+    padding-top: brand.$spacing-2;
+    padding-bottom: brand.$spacing-2;
+}
+
+.recording-transcript__skipped {
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+    font-style: italic;
+}
+
+// ▶ and the time: an outlined pill, so it reads as something to press. Filled while its line is heard.
+.recording-transcript__time {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    justify-self: start;
+    margin-top: 4px;
+    padding: 2px 10px 2px 4px;
+    border: 1px solid brand.$color-dusk;
+    border-radius: brand.$border-radius-full;
+    background: brand.$color-white;
+    color: brand.$color-deep-saffron;
+    font-size: brand.$font-size-caption;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.4;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color brand.$interaction-transition, border-color brand.$interaction-transition;
+
+    &:hover {
+        border-color: brand.$color-saffron;
+        background: brand.$color-parchment;
+    }
+
+    &:focus-visible {
+        outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+        outline-offset: brand.$focus-ring-offset;
+    }
+
+    // Deep saffron, not saffron: white text needs the darker fill to be readable (10:1).
+    &--active,
+    &--active:hover {
+        border-color: brand.$color-deep-saffron;
+        background: brand.$color-deep-saffron;
+        color: brand.$color-white;
+    }
+}
+
+.recording-transcript__time-icon {
+    width: 18px;
+    height: 18px;
+}
+
+// Parts not written down: the same button, quieter.
+.recording-transcript__line--skipped .recording-transcript__time:not(.recording-transcript__time--active) {
+    margin-top: 0;
+    color: brand.$text-color-muted;
+}
+
+.recording-transcript__body {
+    min-width: 0;
+}
+
+// Tibetan needs a larger size and taller lines than Latin text to read comfortably.
+.recording-transcript__text {
+    margin: 0;
+    font-size: 1.125rem;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+}
+
+.recording-transcript__note {
+    margin: brand.$spacing-1 0 0;
+    color: brand.$color-deep-saffron;
+    font-size: brand.$font-size-caption;
+
+    strong {
+        font-weight: brand.$font-weight-semibold;
+    }
+
+    &--corrected {
+        color: brand.$text-color-muted;
+    }
+}
+
+.recording-transcript__undo.btn-link {
+    padding: 0;
+    color: brand.$color-deep-saffron;
+    font-size: inherit;
+    vertical-align: baseline;
+}
+
+.recording-transcript__edit {
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-2;
+}
+
+.recording-transcript__textarea {
+    width: 100%;
+    padding: brand.$spacing-2 brand.$spacing-3;
+    border: 1px solid brand.$color-dusk;
+    border-radius: brand.$border-radius-md;
+    color: brand.$color-espresso;
+    font-size: 1.125rem;
+    line-height: 1.9;
+    resize: vertical;
+
+    &:focus {
+        border-color: brand.$color-saffron;
+        outline: none;
+        box-shadow: 0 0 0 2px color.mix(brand.$color-saffron, brand.$color-white, 30%);
+    }
+}
+
+.recording-transcript__edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: brand.$spacing-2;
+}
+
+.recording-transcript__error {
+    margin: 0;
+    color: brand.$color-danger;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-transcript__empty {
+    margin: brand.$spacing-4 0 0;
+    color: brand.$text-color-muted;
+    text-align: center;
+}
+
+// The next step under the transcript ("Suggest a course"), kept in view at the bottom while reading.
+.recording-transcript__next {
+    position: sticky;
+    z-index: 2;
+    bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: brand.$spacing-3;
+    padding: brand.$spacing-3 0;
+    border-top: 1px solid brand.$color-dusk;
+    background: brand.$color-white;
+
+    .recording-transcript__error {
+        flex-basis: 100%;
+    }
+}
+
+.recording-transcript__next-text {
+    flex: 1 1 320px;
+    margin: 0;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+}
+
+
+// ----------------------------------------------------------------------------
+// Shape your course (src/course-from-recording/shape-course/ShapeCourseScreen.tsx)
+// Design step 6: each section as a bordered group of lesson rows; a lesson opens to edit its summary,
+// key points and questions. The footer (count, saved, review tick, Create) stays in view.
+// ----------------------------------------------------------------------------
+
+.recording-shape {
+    @extend %recording-card;
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-6;
+
+    // Tibetan text in the boxes: a little larger, with taller lines.
+    .form-control[lang="bo"] {
+        font-size: 1.0625rem;
+        line-height: 1.7;
+    }
+}
+
+.recording-shape__title {
+    @extend %recording-screen-title;
+    margin-bottom: brand.$spacing-1;
+}
+
+.recording-shape__intro {
+    margin: 0;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+}
+
+// All the sections, in one fieldset that locks them while the course is being created: no box of its own,
+// and the same space between sections as between the screen's other parts.
+.recording-shape__sections {
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-6;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.recording-shape__section {
+    overflow: hidden;
+    border: 1px solid brand.$color-dusk;
+    border-radius: brand.$border-radius-md;
+}
+
+.recording-shape__section-head {
+    margin: 0;
+    padding: brand.$spacing-3 brand.$spacing-4;
+    border-bottom: 1px solid brand.$color-dusk;
+    background: brand.$color-parchment;
+}
+
+.recording-shape__section-label {
+    margin-bottom: 2px;
+    color: brand.$text-color-muted;
+    font-size: 0.75rem;
+    font-weight: brand.$font-weight-semibold;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.recording-shape__section-title.form-control {
+    background: brand.$color-white;
+    font-weight: brand.$font-weight-semibold;
+}
+
+.recording-shape__lessons {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.recording-shape__lesson {
+    padding: brand.$spacing-3 brand.$spacing-4;
+    border-top: 1px solid color.mix(brand.$color-dusk, brand.$color-white, 60%);
+
+    &:first-child {
+        border-top: 0;
+    }
+
+    // Switched off: still there to switch back on, but stepped back.
+    &--off {
+        .recording-shape__lesson-title,
+        .recording-shape__minutes,
+        .recording-shape__preview {
+            opacity: 0.5;
+        }
+    }
+}
+
+.recording-shape__lesson-head {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-3;
+}
+
+.recording-shape__include {
+    flex: none;
+    margin: 0;
+}
+
+.recording-shape__lesson-title {
+    flex: 1;
+    min-width: 0;
+}
+
+.recording-shape__minutes {
+    flex: none;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+    font-variant-numeric: tabular-nums;
+}
+
+// The summary under a closed lesson, at most two lines.
+.recording-shape__preview {
+    display: -webkit-box;
+    margin: brand.$spacing-1 0 0 brand.$spacing-8;
+    overflow: hidden;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+    line-height: 1.6;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.recording-shape__details {
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-4;
+    margin: brand.$spacing-3 0 brand.$spacing-1 brand.$spacing-8;
+    padding: brand.$spacing-4;
+    border-radius: brand.$border-radius-md;
+    background: brand.$color-parchment;
+
+    @media (max-width: 640px) {
+        margin-left: 0;
+    }
+}
+
+.recording-shape__group {
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-2;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.recording-shape__legend {
+    margin-bottom: brand.$spacing-1;
+    color: brand.$color-espresso;
+    font-size: brand.$font-size-caption;
+    font-weight: brand.$font-weight-semibold;
+}
+
+.recording-shape__item {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-2;
+
+    .form-control {
+        flex: 1;
+        background: brand.$color-white;
+    }
+}
+
+.recording-shape__add.btn-link {
+    align-self: flex-start;
+    padding: 0;
+    color: brand.$color-deep-saffron;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-shape__question {
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-2;
+    padding: brand.$spacing-3;
+    border: 1px solid brand.$color-dusk;
+    border-radius: brand.$border-radius-md;
+    background: brand.$color-white;
+}
+
+.recording-shape__options {
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-1;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+// The radio button marks the right answer.
+.recording-shape__option {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-2;
+
+    input[type="radio"] {
+        flex: none;
+        width: 18px;
+        height: 18px;
+        accent-color: brand.$color-deep-saffron;
+    }
+
+    .form-control {
+        flex: 1;
+    }
+}
+
+.recording-shape__footer {
+    position: sticky;
+    z-index: 2;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-3;
+    padding: brand.$spacing-4 0 brand.$spacing-2;
+    border-top: 1px solid brand.$color-dusk;
+    background: brand.$color-white;
+}
+
+.recording-shape__status {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: brand.$spacing-2;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-shape__count {
+    color: brand.$color-espresso;
+    font-weight: brand.$font-weight-medium;
+}
+
+.recording-shape__saved {
+    color: brand.$text-color-muted;
+
+    &--problem {
+        color: brand.$color-danger;
+    }
+}
+
+.recording-shape__approved,
+.recording-shape__alert {
+    margin: 0;
+}
+
+.recording-shape__actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+// ----------------------------------------------------------------------------
+// Draft course ready (src/course-from-recording/course-ready/CourseReadyScreen.tsx)
+// Design step 7: what was added, as the course outline shows it, and the way there.
+// ----------------------------------------------------------------------------
+
+.recording-ready {
+    @extend %recording-card;
+    display: flex;
+    flex-direction: column;
+    gap: brand.$spacing-4;
+}
+
+.recording-ready__header {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-3;
+}
+
+.recording-ready__icon {
+    flex: none;
+    width: 32px;
+    height: 32px;
+    color: brand.$success-text;
+}
+
+.recording-ready__title {
+    @extend %recording-screen-title;
+}
+
+.recording-ready__intro,
+.recording-ready__note {
+    margin: 0;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-ready__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: brand.$spacing-3;
+    margin: 0;
+}
+
+.recording-ready__stat {
+    padding: brand.$spacing-3 brand.$spacing-4;
+    border-radius: brand.$border-radius-md;
+    background: brand.$color-parchment;
+
+    dt {
+        color: brand.$text-color-muted;
+        font-size: brand.$font-size-caption;
+        font-weight: brand.$font-weight-body;
+    }
+
+    dd {
+        margin: 0;
+        color: brand.$color-espresso;
+        font-size: brand.$font-size-h4;
+        font-weight: brand.$font-weight-semibold;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+.recording-ready__heading {
+    margin: brand.$spacing-2 0 0;
+    color: brand.$color-espresso;
+    font-size: brand.$font-size-body;
+    font-weight: brand.$font-weight-semibold;
+}
+
+.recording-ready__outline {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid brand.$color-dusk;
+    border-radius: brand.$border-radius-md;
+    list-style: none;
+}
+
+.recording-ready__section + .recording-ready__section {
+    border-top: 1px solid brand.$color-dusk;
+}
+
+.recording-ready__section-title {
+    display: block;
+    padding: brand.$spacing-2 brand.$spacing-4;
+    background: brand.$color-parchment;
+    color: brand.$color-espresso;
+    font-weight: brand.$font-weight-semibold;
+}
+
+.recording-ready__lessons {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.recording-ready__lesson {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-3;
+    padding: brand.$spacing-2 brand.$spacing-4;
+    border-top: 1px solid color.mix(brand.$color-dusk, brand.$color-white, 60%);
+}
+
+.recording-ready__lesson-title {
+    flex: 1;
+    min-width: 0;
+    color: brand.$color-espresso;
+}
+
+.recording-ready__lesson-meta {
+    flex: none;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+}
+
+.recording-ready__badge {
+    flex: none;
+    padding: 2px 8px;
+    border-radius: brand.$border-radius-full;
+    background: brand.$warning-bg;
+    color: brand.$warning-text;
+    font-size: 0.75rem;
+    font-weight: brand.$font-weight-medium;
+}
+
+.recording-ready__actions {
+    display: flex;
+    justify-content: flex-end;
+}

@@ -5,6 +5,7 @@
 //   3. Course section schedule (frontend-app-authoring src/course-schedule/)
 //   4. Advanced settings values
 //   5. Studio header
+//   6. Empty course outline ("Create with a tool" menu)
 @use "./variables" as brand;
 
 
@@ -1320,6 +1321,200 @@
 .advanced-settings .setting-items-list textarea.form-control {
     font-family: brand.$font-family-jomolhari, brand.$font-family-brand-ui;
     line-height: 1.5;
+}
+
+
+// ============================================================================
+// 6. Empty course outline
+// ============================================================================
+
+// Shown while a course has no sections: one "Create with a tool" button whose
+// menu lists the course-building tools (AI assistant, From a teaching
+// recording, ... - src/plugin-slots/CourseOutlineCreateToolsSlot), then
+// "or build it yourself" above the outline-style New section / library buttons.
+
+.create-tools-menu__toggle {
+    display: inline-flex !important;
+    align-items: center;
+    gap: brand.$spacing-2;
+    font-family: brand.$font-family-brand-ui;
+    font-weight: brand.$font-weight-semibold;
+
+    &::after {
+        margin-left: brand.$spacing-1;
+    }
+}
+
+.create-tools-menu__toggle-icon {
+    width: 20px;
+    height: 20px;
+}
+
+// A white panel wide enough for a title and a one-line description per tool,
+// drawn like the other brand menus (see _learning.scss "View this course as").
+.create-tools-menu__list {
+    width: 380px;
+    max-width: calc(100vw - #{2 * brand.$spacing-4});
+    margin-top: brand.$spacing-2;
+    padding: brand.$spacing-2;
+    border: 1px solid brand.$color-dusk;
+    border-radius: brand.$border-radius-lg;
+    background: brand.$color-white;
+    box-shadow: 0 12px 32px rgba(brand.$color-espresso, 0.13);
+}
+
+// Icon on the left; title (and "New" badge) over a muted description.
+.create-tools-menu__item {
+    display: flex;
+    align-items: flex-start;
+    gap: brand.$spacing-3;
+    padding: brand.$spacing-3;
+    border-radius: brand.$border-radius-md;
+    background: none;
+    color: brand.$color-deep-brown;
+    font-family: brand.$font-family-brand-ui;
+    white-space: normal;
+    transition: background brand.$interaction-transition, color brand.$interaction-transition;
+
+    & + & {
+        margin-top: 2px;
+    }
+
+    &:hover,
+    &:focus {
+        background: brand.$color-sand;
+        color: brand.$color-espresso;
+        text-decoration: none;
+    }
+
+    &:focus-visible {
+        outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+        outline-offset: -#{brand.$focus-ring-width};
+    }
+
+    &:active {
+        background: brand.$color-dusk;
+        color: brand.$color-espresso;
+    }
+}
+
+// Tinted square behind the icon, so each tool reads at a glance.
+.create-tools-menu__item-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    padding: brand.$spacing-2;
+    border-radius: brand.$border-radius-md;
+    background: brand.$color-parchment;
+    color: brand.$color-deep-saffron;
+}
+
+.create-tools-menu__item-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.create-tools-menu__item-title {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-2;
+    font-size: brand.$font-size-caption + 1;
+    font-weight: brand.$font-weight-semibold;
+    line-height: brand.$line-height-label;
+}
+
+.create-tools-menu__item-badge {
+    padding: 2px brand.$spacing-2;
+    border-radius: brand.$border-radius-full;
+    background: brand.$warning-bg !important;
+    color: brand.$color-deep-saffron !important;
+    font-size: brand.$font-size-label - 1;
+    font-weight: brand.$font-weight-semibold;
+    letter-spacing: 0.02em;
+}
+
+.create-tools-menu__item-description {
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-label + 1;
+    font-weight: brand.$font-weight-body;
+    line-height: brand.$line-height-caption;
+}
+
+// The box itself: a warm, dashed "start here" area instead of Paragon's grey
+// panel, with the message as a heading. EmptyPlaceholder sets bg-gray-100,
+// whose utility colour is !important.
+.outline-empty-placeholder {
+    gap: brand.$spacing-6 !important;
+    padding: brand.$spacing-12 brand.$spacing-8 !important;
+    border: 1px dashed brand.$color-bark !important;
+    border-radius: brand.$border-radius-lg !important;
+    background: brand.$color-parchment !important;
+    box-shadow: none !important;
+
+    > p {
+        color: brand.$color-espresso !important;
+        font-family: brand.$font-family-brand-ui;
+        font-size: brand.$font-size-h4;
+        font-weight: brand.$font-weight-semibold;
+        line-height: brand.$line-height-h4;
+        text-align: center;
+    }
+}
+
+// "or build it yourself": a short rule on each side of the text, then the
+// manual buttons at their natural width, side by side and centred, in a lighter
+// outline than _overrides.scss's 2px one so they sit below "Create with a tool".
+.outline-empty-placeholder__manual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: brand.$spacing-3;
+    width: 100%;
+    max-width: 520px;
+
+    .pgn__hstack {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: brand.$spacing-2 !important;
+    }
+
+    .btn {
+        width: auto;
+        min-height: 40px;
+        margin-top: 0 !important;
+        padding: brand.$spacing-2 brand.$spacing-4;
+        border-width: 1px !important;
+        border-color: brand.$color-bark !important;
+        color: brand.$color-deep-brown !important;
+        background: brand.$color-white !important;
+        font-size: brand.$font-size-caption;
+
+        &:hover:not(:disabled):not(.disabled) {
+            border-color: brand.$color-deep-saffron !important;
+            color: brand.$color-deep-saffron !important;
+            background: brand.$color-white !important;
+        }
+    }
+}
+
+.outline-empty-placeholder__manual-label {
+    display: flex;
+    align-items: center;
+    gap: brand.$spacing-3;
+    width: 100%;
+    margin: 0;
+    color: brand.$text-color-muted;
+    font-family: brand.$font-family-brand-ui;
+    font-size: brand.$font-size-caption;
+
+    &::before,
+    &::after {
+        content: "";
+        flex: 1;
+        border-top: 1px solid brand.$color-dusk;
+    }
 }
 
 
