@@ -2116,6 +2116,122 @@ body:has(#main .header-action-bar.border-bottom) {
     }
 }
 
+// Keep reply author names whole; the app's .author-name uses break-all.
+#main [data-testid^="reply-"] .author-name {
+    word-break: normal;
+    overflow-wrap: break-word;
+}
+
+// Small phones: narrower reply indent so the reply text has room.
+@media (max-width: 424.98px) {
+    #main [data-testid^="reply-"] > .d-flex:has(> .bg-light-300) {
+        margin-left: 20px;
+    }
+}
+
+// Comment and reply editor stays inside its card. Tools show only while
+// the message box is focused.
+#main .post-card-comment form,
+#main [data-testid^="reply-"] > .d-flex:has(> .bg-light-300),
+#main [data-testid^="reply-"] > .d-flex:has(> .bg-light-300) > .bg-light-300 {
+    min-width: 0 !important;
+    max-width: 100% !important;
+}
+
+#main .post-card-comment .tox-tinymce,
+#main .post-card-comment .tox-editor-header,
+#main .post-card-comment .tox-toolbar__overflow {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+}
+
+#main .post-card-comment .tox-editor-header {
+    display: none !important;
+}
+
+#main .post-card-comment .tox-tinymce:focus-within .tox-editor-header {
+    display: block !important;
+}
+
+#main .post-card-comment .tox-toolbar__primary,
+#main .post-card-comment .tox-toolbar__overflow {
+    flex-wrap: wrap !important;
+}
+
+#main .post-card-comment form > .d-flex:has(> [data-testid="show-preview-button"]) {
+    justify-content: flex-start !important;
+}
+
+#main .post-card-comment form > .d-flex.py-2.justify-content-end {
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    max-width: 100%;
+    gap: 8px;
+
+    .btn {
+        flex: 0 0 auto;
+        min-height: 36px;
+        padding: 6px 14px !important;
+        font-size: 13.5px !important;
+    }
+}
+
+@media (max-width: 359.98px) {
+    #main .post-card-comment form > .d-flex.py-2.justify-content-end .btn {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 6px 8px !important;
+    }
+}
+
+// Phone widths: the reply editor starts at the avatar, not the username.
+// Show preview matches that left edge. Cancel and Submit center on the card.
+@media (max-width: 425px) {
+    #main [data-testid^="reply-"] .tox-tinymce {
+        width: calc(100% + 32px + 0.2rem + 0.625rem) !important;
+        max-width: none !important;
+        margin-left: calc(-1 * (32px + 0.2rem + 0.625rem)) !important;
+    }
+
+    #main [data-testid^="reply-"] form > .d-flex:has(> [data-testid="show-preview-button"]) {
+        width: calc(100% + 32px + 0.2rem + 0.625rem) !important;
+        max-width: none !important;
+        margin-left: calc(-1 * (32px + 0.2rem + 0.625rem)) !important;
+        justify-content: flex-start !important;
+    }
+
+    #main [data-testid^="reply-"] form > .d-flex.py-2.justify-content-end {
+        width: calc(100% + 0.125rem + 1rem + 32px + 0.2rem + 0.625rem + 0.625rem) !important;
+        max-width: none !important;
+        margin-left: calc(-1 * (0.125rem + 1rem + 32px + 0.2rem + 0.625rem)) !important;
+        margin-right: 0 !important;
+        justify-content: center !important;
+        gap: 8px;
+    }
+
+    #main [data-testid^="reply-"] form > .d-flex.py-2.justify-content-end .btn {
+        flex: 0 0 auto !important;
+        min-height: 32px !important;
+        padding: 4px 12px !important;
+        font-size: 13px !important;
+        margin-left: 0 !important;
+    }
+}
+
+@media (max-width: 359.98px) {
+    #main [data-testid^="reply-"] form > .d-flex.py-2.justify-content-end .btn {
+        flex: 0 0 auto !important;
+        min-height: 28px !important;
+        height: 28px !important;
+        padding: 2px 8px !important;
+        font-size: 12px !important;
+        line-height: 16px !important;
+    }
+}
+
 // The parent comment is outside .discussion-comments. Color and indent
 // apply on the comment card itself.
 #main .post-card-comment .comment-body,
@@ -2429,6 +2545,17 @@ body:has(#main .header-action-bar.border-bottom) {
     #main .header-action-bar:not(.border-bottom) .pgn__searchfield {
         flex: 0 1 200px;
     }
+
+    // Filter options stack so Type, Status, and Sort by stay on screen.
+    // The discussions page and the learning-unit iframe share .filter-bar.
+    #main .filter-bar .collapsible-body .d-flex.flex-row {
+        flex-direction: column !important;
+        gap: brand.$spacing-4;
+    }
+
+    #main .filter-bar [role="radiogroup"] {
+        width: 100% !important;
+    }
 }
 
 // Tablet & Mobile (≤ 1024 px): post form actions
@@ -2582,6 +2709,85 @@ body:has(#main .header-action-bar.border-bottom) {
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
+    }
+}
+// Phone widths: the comment action bar is smaller than the rest of the page,
+// so it does not crowd the comment. Widths above 425px are unchanged.
+@media (max-width: 425px) {
+    #main .post-card-comment > .hover-card {
+        height: 28px !important;
+    }
+
+    #main .post-card-comment > .hover-card .hover-button {
+        height: 28px !important;
+    }
+
+    #main .post-card-comment > .hover-card .btn-icon {
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        min-height: 28px !important;
+    }
+
+    #main .post-card-comment > .hover-card .btn-icon .pgn__icon,
+    #main .post-card-comment > .hover-card .btn-icon svg {
+        width: 16px !important;
+        height: 16px !important;
+    }
+
+    #main .post-card-comment > .hover-card .btn-tertiary {
+        height: 28px !important;
+        padding: 4px 8px !important;
+        font-size: 11px !important;
+        line-height: 16px !important;
+    }
+
+    #main .post-card-comment > .hover-card [data-testid="actions-dropdown-modal-popup"] .actions-dropdown-item {
+        height: 36px !important;
+        font-size: 12px !important;
+    }
+}
+
+// Small phones: four labels do not fit one row. 2×2, one closed border.
+@media (max-width: 359.98px) {
+    #main .header-action-bar:not(.border-bottom) .nav-button-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        overflow: visible;
+    }
+
+    #main .header-action-bar:not(.border-bottom) .nav-button-group .nav-item {
+        min-width: 0;
+    }
+
+    #main .header-action-bar:not(.border-bottom) .nav-button-group .nav-link {
+        height: auto;
+        margin-left: 0;
+        border-radius: 0 !important;
+    }
+
+    #main .header-action-bar:not(.border-bottom) .nav-button-group .nav-item:nth-child(odd) {
+        margin-right: -1px;
+    }
+
+    #main .header-action-bar:not(.border-bottom) .nav-button-group .nav-item:nth-child(-n + 2) {
+        margin-bottom: -1px;
+    }
+
+    #main .header-action-bar:not(.border-bottom) .nav-button-group .nav-item:nth-child(1) .nav-link {
+        border-radius: $ds-radius-control 0 0 0 !important;
+    }
+
+    #main .header-action-bar:not(.border-bottom) .nav-button-group .nav-item:nth-child(2) .nav-link {
+        border-radius: 0 $ds-radius-control 0 0 !important;
+    }
+
+    #main .header-action-bar:not(.border-bottom) .nav-button-group .nav-item:nth-child(3) .nav-link {
+        border-radius: 0 0 0 $ds-radius-control !important;
+    }
+
+    #main .header-action-bar:not(.border-bottom) .nav-button-group .nav-item:nth-child(4) .nav-link {
+        border-radius: 0 0 $ds-radius-control 0 !important;
     }
 }
 
