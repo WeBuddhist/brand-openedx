@@ -483,3 +483,843 @@ nav.wishlist-pagination {
     max-width: 1560px !important;
   }
 }
+
+
+// Start a Campus page.
+.course-partner-page {
+  width: 100%;
+  color: brand.$text-color;
+  font-family: brand.$font-family-brand-ui;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  h1,
+  h2,
+  h3,
+  p {
+    margin-top: 0;
+  }
+}
+
+main:has(> .course-partner-page) + .site-footer {
+  margin-top: 0;
+}
+
+.course-partner-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 400px;
+  overflow: hidden;
+  background: brand.$color-espresso;
+}
+
+.course-partner-hero__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.course-partner-hero__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(brand.$color-espresso, .62), rgba(brand.$color-espresso, .74));
+  pointer-events: none;
+}
+
+.course-partner-hero__inner {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 56px 40px;
+  pointer-events: none;
+
+  h1 {
+    max-width: 620px;
+    margin-bottom: 22px;
+    color: brand.$color-parchment;
+    font-family: brand.$font-family-brand-display;
+    font-size: clamp(40px, 8vw, 72px);
+    font-weight: brand.$font-weight-display;
+    line-height: 1.06;
+    letter-spacing: -.01em;
+    text-shadow: 0 2px 18px rgba(brand.$color-espresso, .35);
+    text-wrap: pretty;
+  }
+
+  p {
+    max-width: 380px;
+    margin-bottom: 0;
+    color: brand.$color-parchment;
+    font-size: 17px;
+    font-weight: brand.$font-weight-medium;
+    line-height: 1.5;
+    text-shadow: 0 1px 12px rgba(brand.$color-espresso, .4);
+    text-wrap: pretty;
+  }
+}
+
+.course-partner-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(28px, 4vw, 52px);
+  align-items: start;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(36px, 5vh, 60px) 40px;
+}
+
+.course-partner-overview {
+  h2 {
+    max-width: 340px;
+    margin-bottom: 14px;
+    color: brand.$text-color;
+    font-family: brand.$font-family-brand-display;
+    font-size: clamp(29px, 4.4vw, 38px);
+    font-weight: brand.$font-weight-h2;
+    line-height: 1.15;
+    text-wrap: pretty;
+  }
+}
+
+.course-partner-overview__intro {
+  max-width: 400px;
+  margin-bottom: clamp(18px, 3vh, 28px);
+  color: brand.$text-color-primary;
+  font-size: 16px;
+  line-height: brand.$line-height-body;
+  text-wrap: pretty;
+}
+
+.course-partner-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2.4vh, 22px);
+}
+
+.course-partner-benefit {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+
+  h3 {
+    margin-bottom: brand.$spacing-1;
+    color: brand.$text-color;
+    font-family: brand.$font-family-brand-ui;
+    font-size: 16px;
+    font-weight: brand.$font-weight-bold;
+    line-height: 1.5;
+  }
+
+  p {
+    max-width: 320px;
+    margin-bottom: 0;
+    color: brand.$text-color-primary;
+    font-size: brand.$font-size-caption;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+}
+
+.course-partner-benefit__icon {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid brand.$border-color;
+  border-radius: brand.$border-radius-md;
+  background: brand.$card-bg;
+  color: brand.$text-color;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.course-partner-form-card {
+  display: flex;
+  align-self: stretch;
+  flex-direction: column;
+  padding: clamp(24px, 3.6vh, 34px);
+  border: 0;
+  border-radius: 24px;
+  background: brand.$color-white;
+  box-shadow: 0 20px 60px rgba(brand.$color-espresso, .1);
+
+  h2 {
+    margin-bottom: clamp(14px, 2.4vh, 20px);
+    color: brand.$text-color;
+    font-family: brand.$font-family-brand-display;
+    font-size: 27px;
+    font-weight: brand.$font-weight-h2;
+  }
+
+  form {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: clamp(10px, 1.6vh, 14px);
+  }
+
+  label {
+    display: block;
+    margin: 0;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 12px brand.$spacing-4;
+    border: 2px solid brand.$border-color;
+    border-radius: 10px;
+    outline: none;
+    background: brand.$card-bg;
+    color: brand.$text-color;
+    font-family: brand.$font-family-brand-ui;
+    font-size: 16px;
+    transition:
+      background brand.$interaction-transition,
+      border-color brand.$interaction-transition,
+      box-shadow brand.$interaction-transition;
+
+    &::placeholder {
+      color: brand.$text-color-muted;
+    }
+
+    &:focus {
+      background: brand.$color-white;
+      border-color: brand.$primary;
+      box-shadow: 0 0 0 4px rgba(brand.$primary, .16);
+    }
+
+    &.is-invalid {
+      border-color: brand.$color-danger;
+    }
+  }
+
+  textarea {
+    min-height: clamp(76px, 12vh, 124px);
+    overflow: auto;
+    resize: vertical;
+  }
+
+  button {
+    align-self: stretch;
+    min-height: brand.$minimum-touch-target;
+    margin-top: 6px;
+    padding: 13px 34px;
+    border: 0;
+    border-radius: 10px;
+    background: brand.$accent;
+    color: brand.$accent-contrast;
+    font-family: brand.$font-family-brand-ui;
+    font-size: 16px;
+    font-weight: brand.$font-weight-semibold;
+    cursor: pointer;
+    transition:
+      background brand.$interaction-transition,
+      box-shadow brand.$interaction-transition,
+      transform brand.$interaction-transition;
+
+    &:hover {
+      background: brand.$accent-hover;
+      box-shadow: 0 6px 16px rgba(brand.$color-espresso, .18);
+      transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+      outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      cursor: wait;
+      opacity: .7;
+      transform: none;
+    }
+  }
+
+  [role="status"] {
+    margin-bottom: 0;
+    color: brand.$text-color;
+    font-size: brand.$font-size-caption;
+    font-weight: brand.$font-weight-semibold;
+    line-height: 1.6;
+    text-align: center;
+
+    &.is-success {
+      color: brand.$success-text;
+    }
+
+    &.is-error {
+      color: brand.$error-text;
+    }
+  }
+}
+
+.course-partner-form-card__description {
+  display: flex !important;
+  flex: 1;
+  flex-direction: column;
+
+  textarea {
+    height: 100%;
+    min-height: 165px;
+  }
+}
+
+.course-partner-form-card__error {
+  display: block;
+  margin-top: brand.$spacing-1;
+  color: brand.$error-text;
+  font-size: brand.$font-size-label;
+  line-height: brand.$line-height-label;
+}
+
+.course-partner-cta {
+  padding: 72px 40px 80px;
+  background: brand.$card-bg;
+}
+
+.course-partner-cta__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 5fr);
+  gap: 56px;
+  align-items: center;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.course-partner-cta__media {
+  width: 100%;
+  height: 340px;
+  overflow: hidden;
+  border: 1px solid brand.$border-color;
+  border-radius: 200px 24px;
+  background-color: brand.$color-white;
+}
+
+.course-partner-cta__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.course-partner-cta__content {
+  h2 {
+    max-width: 340px;
+    margin-bottom: 18px;
+    color: brand.$text-color;
+    font-family: brand.$font-family-brand-display;
+    font-size: clamp(32px, 5.2vw, 44px);
+    font-weight: brand.$font-weight-display;
+    line-height: 1.1;
+    text-wrap: pretty;
+
+    em {
+      color: brand.$primary;
+      font-style: italic;
+    }
+  }
+
+  p {
+    max-width: 400px;
+    margin-bottom: 28px;
+    color: brand.$text-color-primary;
+    font-size: 16px;
+    line-height: brand.$line-height-body;
+    text-wrap: pretty;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: brand.$minimum-touch-target;
+    padding: 11px 30px;
+    border-radius: brand.$border-radius-md;
+    background: brand.$accent;
+    color: brand.$accent-contrast;
+    font-size: 16px;
+    font-weight: brand.$font-weight-semibold;
+    text-decoration: none;
+    transition:
+      background brand.$interaction-transition,
+      box-shadow brand.$interaction-transition,
+      transform brand.$interaction-transition;
+
+    &:hover {
+      background: brand.$accent-hover;
+      box-shadow: 0 6px 16px rgba(brand.$color-espresso, .18);
+      color: brand.$accent-contrast;
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+      outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+      outline-offset: 2px;
+    }
+  }
+}
+
+@media (width <= 1000px) {
+  .course-partner-body {
+    gap: 40px;
+  }
+}
+
+@media (width <= 900px) {
+  .course-partner-hero {
+    min-height: 340px;
+  }
+
+  .course-partner-hero__inner {
+    padding: brand.$spacing-12 brand.$spacing-6;
+  }
+
+  .course-partner-body {
+    grid-template-columns: 1fr;
+    padding: brand.$spacing-12 brand.$spacing-6;
+  }
+
+  .course-partner-overview__intro,
+  .course-partner-benefit p {
+    max-width: none;
+  }
+
+  .course-partner-cta {
+    padding: 56px brand.$spacing-6 brand.$spacing-16;
+  }
+
+  .course-partner-cta__inner {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+
+@media (width <= 600px) {
+  .course-partner-hero {
+    min-height: 300px;
+  }
+
+  .course-partner-hero__inner {
+    padding: 40px 20px;
+  }
+
+  .course-partner-body {
+    gap: brand.$spacing-8;
+    padding: 40px 20px;
+  }
+
+  .course-partner-form-card {
+    padding: brand.$spacing-6 20px;
+  }
+
+  .course-partner-cta {
+    padding: 44px 20px 52px;
+  }
+
+  .course-partner-cta__media {
+    height: 230px;
+    border-radius: 130px 18px;
+  }
+}
+
+@media (width >= 1600px) {
+  .course-partner-hero__inner,
+  .course-partner-body {
+    max-width: 1440px;
+  }
+
+  .course-partner-cta__inner {
+    max-width: 1360px;
+  }
+}
+
+@media (width >= 2000px) {
+  .course-partner-hero__inner,
+  .course-partner-body {
+    max-width: 1560px;
+  }
+
+  .course-partner-cta__inner {
+    max-width: 1480px;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Classroom — live text sync
+//
+// A teacher drives; every student's reader marks and scrolls to the same line.
+// The page is mostly one long column of Tibetan, so almost everything here is in
+// service of reading it comfortably for an hour.
+// ---------------------------------------------------------------------------
+
+.classroom-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: brand.$spacing-8 brand.$spacing-6 brand.$spacing-16;
+  color: brand.$text-color;
+  font-family: brand.$font-family-brand-ui;
+}
+
+.classroom-page__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: brand.$spacing-4;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: brand.$spacing-6;
+  border-bottom: 1px solid brand.$border-color;
+
+  h1 {
+    margin: 0;
+    color: brand.$text-color;
+    font-family: brand.$font-family-brand-display;
+    // The title is often Tibetan, where a display face set tight is hard to read.
+    font-size: clamp(24px, 3.2vw, brand.$font-size-h2);
+    font-weight: brand.$font-weight-h2;
+    line-height: 1.3;
+  }
+}
+
+.classroom-page__meta {
+  margin: brand.$spacing-2 0 0;
+  color: brand.$text-color-muted;
+  font-size: brand.$font-size-caption;
+}
+
+// The follow toggle. Small and quiet: it matters to the one student who wants to
+// read back, and should not compete with the text for anyone else.
+.classroom-page__controls {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+
+  .pgn__form-switch-helper-text {
+    display: none;
+  }
+
+  label {
+    margin-bottom: 0;
+    color: brand.$text-color-muted;
+    font-size: brand.$font-size-caption;
+  }
+}
+
+.classroom-page__host {
+  display: flex;
+  flex-wrap: wrap;
+  gap: brand.$spacing-3;
+  align-items: center;
+
+  > span {
+    color: brand.$color-deep-saffron;
+    font-size: brand.$font-size-label;
+    font-weight: brand.$font-weight-label;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+}
+
+.classroom-page__error {
+  margin: brand.$spacing-4 0 0;
+  padding: brand.$spacing-3 brand.$spacing-4;
+  border: 1px solid brand.$color-danger-border;
+  border-radius: 8px;
+  background: brand.$color-blush;
+  color: brand.$color-danger-dark;
+  font-size: brand.$font-size-caption;
+}
+
+.classroom-page__text {
+  flex: 1;
+  padding-top: brand.$spacing-6;
+}
+
+.classroom-page__notice,
+.classroom-page__join {
+  max-width: 420px;
+  margin: brand.$spacing-16 auto;
+  text-align: center;
+
+  h1 {
+    margin-bottom: brand.$spacing-4;
+    font-family: brand.$font-family-brand-display;
+    font-size: brand.$font-size-h3;
+    font-weight: brand.$font-weight-h3;
+  }
+}
+
+// Every screen before the classroom: joining, starting, and getting back in.
+.classroom-page__entry {
+  max-width: 460px;
+  margin: brand.$spacing-12 auto;
+
+  h1 {
+    margin-bottom: brand.$spacing-2;
+    font-family: brand.$font-family-brand-display;
+    font-size: brand.$font-size-h3;
+    font-weight: brand.$font-weight-h3;
+  }
+
+  // A room code is read off a whiteboard and typed in a hurry, so it is set large
+  // and widely tracked — the shape of each character has to be unmistakable.
+  input[maxlength="6"] {
+    font-size: brand.$font-size-h3;
+    font-weight: brand.$font-weight-semibold;
+    letter-spacing: 6px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+}
+
+.classroom-page__sub {
+  margin-bottom: brand.$spacing-6;
+  color: brand.$text-color-muted;
+  font-size: brand.$font-size-caption;
+}
+
+.classroom-page__back {
+  padding-left: 0;
+  margin-bottom: brand.$spacing-2;
+}
+
+.classroom-page__switch {
+  margin-top: brand.$spacing-6;
+  padding-top: brand.$spacing-4;
+  border-top: 1px solid brand.$border-color;
+  color: brand.$text-color-muted;
+  font-size: brand.$font-size-caption;
+
+  .btn-link {
+    padding: 0;
+    font-size: inherit;
+    vertical-align: baseline;
+  }
+}
+
+.classroom-page__search {
+  display: flex;
+  gap: brand.$spacing-2;
+
+  > :first-child {
+    flex: 1;
+  }
+}
+
+.classroom-page__results {
+  max-height: 260px;
+  margin: brand.$spacing-3 0 brand.$spacing-6;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+
+  li + li {
+    margin-top: brand.$spacing-2;
+  }
+}
+
+.classroom-page__result {
+  width: 100%;
+  // Titles are Tibetan and often long; they wrap rather than being clipped, and
+  // they are set in the content face because that is what they are.
+  font-family: brand.$font-family-course-content;
+  text-align: left;
+  white-space: normal;
+}
+
+// The room code, written on the board. The largest thing on the page, because it
+// is read from the back of the room and copied by thirty people at once.
+.classroom-page__big-code {
+  margin: brand.$spacing-4 0;
+  color: brand.$color-deep-saffron;
+  // The UI face, not the display one. Cormorant Garamond sets old-style figures, so
+  // `7` and `2` drop below the baseline and read as lowercase letters — which undoes
+  // the whole point of an alphabet chosen so a code cannot be misread from the back
+  // of a room. `lining-nums` as well, in case the face is ever swapped for one that
+  // defaults to text figures.
+  font-family: brand.$font-family-brand-ui;
+  font-variant-numeric: lining-nums tabular-nums;
+  font-size: brand.$font-size-h1;
+  font-weight: brand.$font-weight-bold;
+  letter-spacing: 10px;
+  text-align: center;
+}
+
+// The recovery code is shown exactly once, so it is set apart rather than sitting
+// in the flow where it reads as one more line of text.
+.classroom-page__recovery {
+  margin-bottom: brand.$spacing-6;
+  padding: brand.$spacing-4;
+  border: 1px solid brand.$border-color;
+  border-radius: 8px;
+  background: brand.$color-linen;
+
+  code {
+    display: block;
+    margin: brand.$spacing-2 0;
+    color: brand.$text-color;
+    font-size: brand.$font-size-body;
+    word-break: break-all;
+  }
+}
+
+.classroom-page__recovery-label {
+  margin: 0;
+  color: brand.$color-deep-saffron;
+  font-size: brand.$font-size-label;
+  font-weight: brand.$font-weight-label;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.classroom-page__recovery-help {
+  margin: 0;
+  color: brand.$text-color-muted;
+  font-size: brand.$font-size-caption;
+}
+
+// ---------------------------------------------------------------------------
+// The text itself
+// ---------------------------------------------------------------------------
+
+.classroom-reader {
+  // Jomolhari, not the UI face. The brand sets it aside for content rather than
+  // chrome, and this is a work being read rather than an interface being used.
+  font-family: brand.$font-family-course-content;
+  font-size: clamp(19px, 2.4vw, 21px);
+  // Tibetan stacks vowel signs above and below the base letter, so lines set at a
+  // Latin line-height collide. This is deliberately far looser than the brand's body.
+  line-height: 1.95;
+  text-align: left;
+  text-wrap: pretty;
+}
+
+.classroom-reader__line {
+  position: relative;
+  display: block;
+  // The highlight bleeds into the gutter on both sides, so a marked line reads as a
+  // band rather than a boxed-in paragraph. `width: 100%` with negative margins only
+  // *shifts* the box — it has to be widened by the same amount, or the band sits
+  // twelve pixels left of the column and stops twelve pixels short on the right.
+  width: calc(100% + #{brand.$spacing-3 * 2});
+  margin: 0 (-(brand.$spacing-3));
+  padding: brand.$spacing-1 brand.$spacing-3;
+  // Tibetan breaks at the tsek (U+0F0B) and browsers honour that, so ordinary prose
+  // wraps on its own. This is only for a run with no tsek in it, which would
+  // otherwise push a line past the edge of the column.
+  overflow-wrap: break-word;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  transition: background-color 160ms ease;
+
+  // A teacher's line is a <button>; a student's is a <p>. These reset the button
+  // back to looking like prose, because it is prose that happens to be pressable.
+  &:not(.classroom-reader__line--pickable) {
+    cursor: default;
+  }
+}
+
+.classroom-reader__line--pickable {
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(brand.$color-sand, 0.55);
+  }
+
+  &:focus-visible {
+    outline: 2px solid brand.$accent;
+    outline-offset: 2px;
+  }
+}
+
+// The current line. A soft block plus a saffron rule in the gutter, so it reads at
+// a glance from across a room without turning the text itself orange — which would
+// fight the text rather than point at it.
+.classroom-reader__line--current {
+  background: brand.$color-sand;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: brand.$spacing-1;
+    bottom: brand.$spacing-1;
+    width: 3px;
+    border-radius: 2px;
+    background: brand.$accent;
+  }
+}
+
+// Structural kinds, as the **library** reports them. Affect spacing and emphasis
+// only — sync treats every kind alike.
+//
+// These names come from the live API, checked across several texts: `front_matter`,
+// `back_matter`, `verse` and `paragraph`. An earlier version of this section styled
+// `title`, `homage`, `outline` and `colophon`, taken from the old classroom app's own
+// vocabulary — a different pipeline's names, none of which the library ever returns,
+// so not one of those rules could match. Check
+// `/v2/editions/{id}/segmentation/segments` before adding another.
+
+// The opening matter: the work's name and its homage, set apart from the body.
+.classroom-reader__line--front_matter {
+  margin-bottom: brand.$spacing-4;
+  color: brand.$text-color-primary;
+  font-size: 1.15em;
+  text-align: center;
+  text-wrap: balance;
+}
+
+// Quoted root text, usually metrical. Indented so it reads as quotation rather than
+// as the commentary around it.
+.classroom-reader__line--verse {
+  padding-left: brand.$spacing-8;
+}
+
+// Ordinary commentary prose — the default, and the bulk of most texts. It needs no
+// rule of its own; this says so, rather than leaving the next person to wonder
+// whether it was forgotten.
+.classroom-reader__line--paragraph {
+  // Intentionally empty.
+}
+
+// The closing colophon: who wrote it, where, and at whose request.
+.classroom-reader__line--back_matter {
+  margin-top: brand.$spacing-6;
+  color: brand.$text-color-light;
+  font-size: 0.95em;
+}
+
+@media (max-width: 575px) {
+  .classroom-page {
+    padding: brand.$spacing-6 brand.$spacing-4 brand.$spacing-8;
+  }
+
+  .classroom-reader__line--verse {
+    padding-left: brand.$spacing-4;
+  }
+}
