@@ -26,6 +26,17 @@
 
   main[data-testid="main"] {
     flex: 1 1 auto;
+
+    // List-page "loading responses" spinner. Same wrapper is used inside the
+    // review modal, which renders outside main, so this leaves that one alone.
+    .w-100.h-100.text-center:has(> .spinner-border) {
+      width: 100%;
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
   }
 
   .site-footer {
