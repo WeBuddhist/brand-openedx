@@ -2,6 +2,86 @@
 @use "./variables" as brand;
 @import "./overrides";
 
+// Same confirm-email banner as the learner dashboard.
+.pgn__pageBanner-component:has(.confirm-email-now-button) {
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 0;
+    padding: 13px 60px;
+    color: brand.$color-parchment;
+    background: brand.$color-dharma-teal;
+    font-family: brand.$font-family-brand-ui;
+    font-size: brand.$font-size-caption;
+    line-height: 1.5;
+    text-align: center;
+    text-wrap: pretty;
+
+    .pgn__pageBanner-content {
+        justify-content: center;
+        padding: 0;
+    }
+
+    .confirm-email-now-button {
+        min-height: auto;
+        margin: 0;
+        padding: 0;
+        color: inherit !important;
+        font-weight: brand.$font-weight-label;
+        text-decoration: underline !important;
+        text-decoration-thickness: 1px !important;
+        text-underline-offset: 3px;
+
+        &:hover {
+            color: brand.$color-saffron !important;
+        }
+
+        &:focus-visible {
+            outline-color: brand.$color-saffron;
+            outline-offset: 3px;
+        }
+    }
+
+    .pgn__pageBanner-dismissButtonContainer {
+        position: absolute;
+        top: 50%;
+        right: brand.$spacing-2;
+        width: brand.$minimum-touch-target;
+        min-width: brand.$minimum-touch-target;
+        height: brand.$minimum-touch-target;
+        min-height: brand.$minimum-touch-target;
+        transform: translateY(-50%);
+
+        .btn-icon {
+            color: rgba(brand.$color-parchment, 0.7);
+            background: transparent;
+
+            &:hover {
+                color: brand.$color-white;
+                background: rgba(brand.$color-white, 0.12);
+            }
+
+            &:focus-visible {
+                outline-color: brand.$color-saffron;
+                outline-offset: -3px;
+            }
+        }
+    }
+}
+
+@media (max-width: 600px) {
+    .pgn__pageBanner-component:has(.confirm-email-now-button) {
+        justify-content: flex-start;
+        padding: 12px 52px 12px brand.$spacing-4;
+        text-align: left;
+
+        .pgn__pageBanner-content {
+            justify-content: flex-start;
+        }
+    }
+}
+
 // No brand token. Change the value here when one exists.
 $ds-font-size-ui: 14.5px;
 $ds-font-size-title: 15px;
