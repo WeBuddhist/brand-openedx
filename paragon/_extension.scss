@@ -2467,9 +2467,15 @@ $classroom-toc-500: #2459a8;
 // The contents, as a drawer down the right-hand side. A table of contents is long, and some
 // headings wrap, so a floating menu covered the very text it was for. Down the side it can stay
 // open as a map, with the heading the class is under marked.
+//
+// The drawer slides in from the edge while the text slides over to make room for it, both on the
+// same timing, so they read as one movement.
+$classroom-panel-width: 440px;
+$classroom-panel-motion: 300ms cubic-bezier(0.2, 0, 0, 1);
+
 @keyframes classroom-drawer-in {
-  from { transform: translateX(24px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }
 
 .classroom-drawer {
@@ -2480,11 +2486,11 @@ $classroom-toc-500: #2459a8;
   bottom: 0;
   display: flex;
   flex-direction: column;
-  width: min(380px, 100vw);
+  width: min(#{$classroom-panel-width}, 100vw);
   border-left: 1px solid brand.$border-color;
   background: brand.$color-white;
   box-shadow: -8px 0 24px rgba(0, 0, 0, 0.08);
-  animation: classroom-drawer-in 180ms ease-out;
+  animation: classroom-drawer-in $classroom-panel-motion both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2540,6 +2546,53 @@ $classroom-toc-500: #2459a8;
   &:focus-visible {
     outline: brand.$focus-ring-width solid brand.$focus-ring-color;
     outline-offset: 2px;
+  }
+}
+
+// The notes and the dictionary in the same drawer: only their body scrolls, like the list.
+.classroom-drawer__body {
+  flex: 1 1 auto;
+  padding: brand.$spacing-4 brand.$spacing-6 brand.$spacing-8;
+  overflow-y: auto;
+}
+
+// While a side panel is open on a wide screen, the text moves over and centres itself in what
+// is left, so the panel covers none of it. Narrower, there is not room for both, and the panel
+// lies over the right of the text as it always has; on a phone it is the whole screen.
+//
+// The page's width and left margin are given as lengths, not `auto`, on wide screens: a browser
+// cannot animate to or from `auto`, and the text would jump across instead of sliding.
+@media (min-width: 960px) {
+  .classroom-page--reading {
+    width: min(880px, 100%);
+    max-width: none;
+    margin-right: 0;
+    margin-left: max(0px, calc((100% - 880px) / 2));
+    transition: width $classroom-panel-motion, margin-left $classroom-panel-motion;
+  }
+
+  .classroom-page--reading.classroom-page--panel {
+    width: min(880px, calc(100% - #{$classroom-panel-width}));
+    margin-left: max(0px, calc((100% - #{$classroom-panel-width} - 880px) / 2));
+  }
+}
+
+// The buttons fixed to the bottom right (the teacher's line stepper, a student's sync) move out
+// from under an open panel. A phone's panel covers everything, so there they stay.
+@media (min-width: 576px) {
+  .classroom-stepper {
+    transition: right $classroom-panel-motion;
+  }
+
+  .classroom-page--panel .classroom-stepper {
+    right: calc(#{$classroom-panel-width} + #{brand.$spacing-6});
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .classroom-page--reading,
+  .classroom-stepper {
+    transition: none;
   }
 }
 
@@ -2702,6 +2755,24 @@ $classroom-note-pink: rgba(240, 98, 146, 0.32);
 .classroom-note--blue { background: $classroom-note-blue; }
 .classroom-note--pink { background: $classroom-note-pink; }
 
+// With highlights hidden, the one note just gone to from "My notes" is drawn once its line has
+// come to rest on the screen, held, then faded out (`--flash-fade`) before the page takes it
+// away. A transition on a class the page sets, not an animation: it runs every time.
+.classroom-page--flash .classroom-note {
+  transition: background-color 700ms ease-in, text-decoration-color 700ms ease-in;
+}
+
+.classroom-page--flash-fade .classroom-note {
+  background-color: transparent;
+  text-decoration-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .classroom-page--flash .classroom-note {
+    transition: none;
+  }
+}
+
 // A highlight in the text. Not a link: it is the student's own mark, so it takes the
 // text's own colour and shows it can be opened only by a pointer and a hairline beneath.
 .classroom-note {
@@ -2733,15 +2804,17 @@ $classroom-note-pink: rgba(240, 98, 146, 0.32);
   position: fixed;
   z-index: 1050;
   top: max(brand.$spacing-2, calc(var(--selection-top) - 52px));
-  left: clamp(brand.$spacing-4, var(--selection-left), calc(100vw - 260px));
+  // Kept on screen: half the bar's width from either edge (it is centred on the words), and it
+  // is about 320px wide with both labelled buttons in it.
+  left: clamp(170px, var(--selection-left), calc(100vw - 170px));
   display: flex;
-  gap: brand.$spacing-2;
+  gap: 2px;
   align-items: center;
-  padding: brand.$spacing-2 brand.$spacing-3;
-  border: 1px solid brand.$border-color;
+  padding: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 999px;
   background: brand.$color-white;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.06);
   // Pressing a button here must not clear the selection it is about.
   user-select: none;
   -webkit-user-select: none;
@@ -2758,20 +2831,42 @@ $classroom-note-pink: rgba(240, 98, 146, 0.32);
     left: 0;
     right: 0;
     justify-content: center;
-    padding: brand.$spacing-3 brand.$spacing-4 calc(#{brand.$spacing-3} + env(safe-area-inset-bottom, 0px));
+    padding: brand.$spacing-2 brand.$spacing-4 calc(#{brand.$spacing-2} + env(safe-area-inset-bottom, 0px));
     border-width: 1px 0 0;
     border-radius: 0;
     transform: none;
   }
 }
 
+// The colours, as one group, then a thin rule, then the two actions.
+.classroom-selection-bar__colors {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 0 brand.$spacing-2 0 brand.$spacing-1;
+}
+
+.classroom-selection-bar__divider {
+  flex: none;
+  width: 1px;
+  height: 20px;
+  margin: 0 brand.$spacing-1;
+  background: brand.$border-color;
+}
+
 .classroom-selection-bar__swatch {
   flex: none;
-  width: 32px;
-  height: 32px;
-  border: 2px solid transparent;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 50%;
   cursor: pointer;
+  transition: transform 120ms ease-out;
+
+  &:hover:not(:disabled) {
+    transform: scale(1.15);
+  }
 
   &:focus-visible {
     outline: brand.$focus-ring-width solid brand.$focus-ring-color;
@@ -2784,9 +2879,40 @@ $classroom-note-pink: rgba(240, 98, 146, 0.32);
   }
 }
 
-// The colour a note is now, in the dialog that changes it.
-.classroom-selection-bar__swatch--chosen {
-  border-color: brand.$text-color;
+// "Add note" and "Look up": an icon before the words, in a compact pill that tints on hover.
+// Nested to outweigh Paragon's `!important` button rules.
+.classroom-selection-bar .classroom-selection-bar__action {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 0 !important;
+  height: 32px;
+  padding: 0 brand.$spacing-3 !important;
+  border: 0 !important;
+  border-radius: 999px;
+  background: transparent !important;
+  color: brand.$text-color !important;
+  font-size: brand.$font-size-caption;
+  font-weight: brand.$font-weight-label;
+  white-space: nowrap;
+
+  &:hover:not(:disabled),
+  &:focus-visible {
+    background: brand.$color-linen !important;
+  }
+
+  svg {
+    flex: none;
+    color: brand.$text-color-muted;
+  }
+}
+
+// A narrow phone has no room for four colours and two worded buttons in one row: the
+// buttons keep their icon, and their name for screen readers and as a tooltip.
+@media (max-width: 420px) {
+  .classroom-selection-bar__label {
+    display: none;
+  }
 }
 
 .classroom-note-toast {
@@ -2797,44 +2923,417 @@ $classroom-note-pink: rgba(240, 98, 146, 0.32);
   max-width: min(420px, calc(100vw - #{brand.$spacing-8}));
 }
 
-.classroom-note-dialog__quote,
-.classroom-notes-panel__quote {
-  margin: 0 0 brand.$spacing-4;
-  padding: brand.$spacing-2 brand.$spacing-3;
+// The note form, in a speech bubble pointing at the words it is about. The page places it
+// (top, left, width, and where the point is: `--note-point-x`) in the page's own coordinates,
+// so it moves with the text when the page scrolls. The box to write in takes most of it: one
+// slim row above (the words, the colours, the cross) and one below (who can see it, the buttons).
+.classroom-note-bubble {
+  position: absolute;
+  z-index: 1055;
+  box-sizing: border-box;
+  padding: brand.$spacing-3 brand.$spacing-4 brand.$spacing-4;
+  border: 1px solid brand.$border-color;
+  border-radius: 16px;
+  background: brand.$color-white;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.06);
+  animation: classroom-note-bubble-in 140ms ease-out;
+
+  // The point: a small square turned on its corner, half of it showing past the edge, with the
+  // bubble's own border on the two sides that show.
+  &::before {
+    content: "";
+    position: absolute;
+    left: calc(var(--note-point-x, 50%) - 8px);
+    width: 16px;
+    height: 16px;
+    border: 1px solid brand.$border-color;
+    background: brand.$color-white;
+    transform: rotate(45deg);
+  }
+}
+
+// Under the words: the point is on top, aimed up at them.
+.classroom-note-bubble--below::before {
+  top: -9px;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+// Over the words: the point is underneath, aimed down.
+.classroom-note-bubble--above::before {
+  bottom: -9px;
+  border-top: 0;
+  border-left: 0;
+}
+
+// Not yet placed, or with nothing to point at (the words are gone from the text): in the middle
+// of the screen, with no point.
+.classroom-note-bubble--floating {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: min(440px, calc(100vw - 32px));
+  transform: translate(-50%, -50%);
+  animation: none;
+
+  &::before {
+    display: none;
+  }
+}
+
+@keyframes classroom-note-bubble-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .classroom-note-bubble {
+    animation: none;
+  }
+}
+
+// On a phone: a sheet along the bottom of the screen, over the keyboard, with no point. There is
+// no room beside the words for both.
+@media (max-width: 575px) {
+  .classroom-note-bubble,
+  .classroom-note-bubble--floating {
+    position: fixed;
+    top: auto !important;
+    right: 0;
+    bottom: 0;
+    left: 0 !important;
+    width: 100% !important;
+    padding-bottom: calc(#{brand.$spacing-3} + env(safe-area-inset-bottom, 0px));
+    border-width: 1px 0 0;
+    border-radius: 16px 16px 0 0;
+    transform: none;
+
+    &::before {
+      display: none;
+    }
+  }
+}
+
+// The first row: the words, the colours, then the close cross, all centred on one line. A thin
+// rule sets the cross apart from the colours, so it does not read as a fifth one.
+.classroom-note-dialog__top {
+  display: flex;
+  gap: brand.$spacing-3;
+  align-items: center;
+  margin: 0 0 brand.$spacing-3;
+}
+
+.classroom-note-dialog__divider {
+  flex: none;
+  width: 1px;
+  height: 16px;
+  background: brand.$border-color;
+}
+
+// A plain cross: no border or box of its own until it is hovered or reached by keyboard.
+.classroom-note-dialog__close {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: 0 (-(brand.$spacing-1)) 0 (-(brand.$spacing-1));
+  padding: 0;
+  border: 0;
   border-radius: 6px;
-  color: brand.$text-color;
-  line-height: 1.7;
+  background: transparent;
+  color: brand.$text-color-muted;
+  cursor: pointer;
+  appearance: none;
+  transition: background-color 120ms ease-out, color 120ms ease-out;
+
+  &:hover {
+    background: brand.$color-linen;
+    color: brand.$text-color;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+    outline-offset: 1px;
+  }
 }
 
-// The words being annotated take the face they are read in.
-.classroom-note-dialog__quote--source,
-.classroom-notes-panel__quote[lang="bo"] {
-  font-family: brand.$font-family-course-content;
-}
-
+// The words: one or two lines, no more, so a long passage does not crowd the box.
 .classroom-note-dialog__quote {
-  background: brand.$color-linen;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+
+  blockquote {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    margin: 0;
+    color: brand.$text-color;
+    font-size: brand.$font-size-caption;
+    line-height: 1.8;
+  }
+
+  blockquote[lang="bo"] {
+    font-family: brand.$font-family-course-content;
+    font-size: 1rem;
+  }
+}
+
+// The highlight itself, wrapping line to line like the one in the text.
+.classroom-note-dialog__mark {
+  padding: 0.1em 0.2em;
+  border-radius: 3px;
+  color: inherit;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-color 120ms ease-out;
 }
 
 .classroom-note-dialog__colors {
   display: flex;
-  gap: brand.$spacing-3;
+  flex: none;
+  gap: brand.$spacing-2;
   align-items: center;
-  margin: 0 0 brand.$spacing-4;
-  padding: 0;
-  border: 0;
+}
 
-  legend {
-    float: left;
-    width: auto;
-    margin: 0 brand.$spacing-3 0 0;
-    color: brand.$text-color-muted;
-    font-size: brand.$font-size-caption;
+// A swatch is the highlight colour, so it matches the words beside it; the chosen one is a
+// little larger and has a soft tick in it (not a dark ring, which looked heavy), so the choice
+// does not rest on telling colours apart.
+.classroom-note-dialog__swatch {
+  position: relative;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 120ms ease-out;
+
+  &:hover {
+    transform: scale(1.12);
+  }
+
+  &[aria-checked="true"] {
+    transform: scale(1.15);
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 5px;
+      left: 7.5px;
+      width: 5px;
+      height: 9px;
+      border: solid rgba(0, 0, 0, 0.55);
+      border-width: 0 1.75px 1.75px 0;
+      transform: rotate(45deg);
+    }
+  }
+
+  &:focus-visible {
+    outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+    outline-offset: 4px;
   }
 }
 
+// The hero: a soft paper-coloured area to write on, with no hard frame. Focused, it turns white
+// and takes a thin warm edge, so where the typing goes is clear without a heavy double ring.
+.classroom-note-dialog__box {
+  display: block;
+  width: 100%;
+  min-height: 132px;
+  max-height: 50vh;
+  padding: brand.$spacing-3;
+  // A soft tinted panel to write in, set apart from the bubble by its colour, not a line. While
+  // writing it turns white with one plain line round it, and no glow outside it: a pale ring next
+  // to the line read as a second, blurry border.
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: mix(brand.$color-linen, #fff, 55%);
+  box-shadow: none;
+  color: brand.$text-color;
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+  transition: background-color 120ms ease-out, border-color 120ms ease-out;
+
+  &::placeholder {
+    color: brand.$text-color-muted;
+    opacity: 0.75;
+  }
+
+  &:focus,
+  &:focus-visible {
+    border-color: rgba(brand.$color-bark, 0.45);
+    outline: none;
+    background: brand.$color-white;
+    box-shadow: none;
+  }
+}
+
+// One row: who can see it at the left, the buttons at the right.
+.classroom-note-bubble .classroom-note-dialog__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: brand.$spacing-1;
+  align-items: center;
+  padding-top: brand.$spacing-3;
+}
+
+// Small, even buttons, to suit a bubble (Paragon's are sized for a full form). Nested to
+// outweigh Paragon's `!important` rules.
+.classroom-note-bubble .classroom-note-dialog__footer .btn {
+  min-height: 0 !important;
+  height: 34px;
+  padding: 0 brand.$spacing-4 !important;
+  border-radius: 8px;
+  font-size: brand.$font-size-caption;
+  font-weight: brand.$font-weight-label;
+}
+
+.classroom-note-bubble .classroom-note-dialog__footer .btn-tertiary {
+  color: brand.$text-color-muted !important;
+
+  &:hover:not(:disabled) {
+    background: brand.$color-linen !important;
+    color: brand.$text-color !important;
+  }
+}
+
+// The words just selected, highlighted again in the text while the bubble is open (the browser's
+// own selection is gone by then), in the colour being chosen. Drawn over the text, so multiplied
+// in: the letters stay as dark as they are.
+.classroom-note-preview {
+  position: absolute;
+  z-index: 1;
+  border-radius: 3px;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  transition: background-color 120ms ease-out;
+}
+
+.classroom-note-dialog__help {
+  display: flex;
+  gap: brand.$spacing-1;
+  align-items: center;
+  margin: 0 auto 0 0;
+  color: brand.$text-color-muted;
+  font-size: brand.$font-size-caption;
+
+  svg {
+    flex: none;
+  }
+}
+
+.classroom-note-bubble .classroom-note-dialog__footer .classroom-note-dialog__delete {
+  color: brand.$color-danger !important;
+
+  &:hover:not(:disabled) {
+    background: rgba(brand.$color-danger, 0.08) !important;
+    color: brand.$color-danger !important;
+  }
+}
+
+// The list of notes. Over it: who can see them and how many there are, then (with more than
+// one colour in use) a row of colour filters. Each note is a compact card: the words highlighted
+// as they are in the text, then what was written. The card goes to the line; the pen opens it.
+.classroom-notes-panel__body-wrap {
+  padding-top: brand.$spacing-4;
+}
+
+.classroom-notes-panel__meta {
+  display: flex;
+  gap: brand.$spacing-3;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 brand.$spacing-3;
+}
+
 .classroom-notes-panel__intro {
+  display: flex;
+  gap: brand.$spacing-1;
+  align-items: center;
+  margin: 0;
+  color: brand.$text-color-muted;
+  font-size: brand.$font-size-caption;
+
+  svg {
+    flex: none;
+  }
+}
+
+.classroom-notes-panel__count {
+  flex: none;
+  padding: 2px brand.$spacing-2;
+  border-radius: 999px;
+  background: brand.$color-linen;
+  color: brand.$text-color-muted;
+  font-size: 0.75rem;
+  font-weight: brand.$font-weight-label;
+}
+
+.classroom-notes-panel__filters {
+  display: flex;
+  gap: 6px;
+  align-items: center;
   margin: 0 0 brand.$spacing-4;
+  padding-bottom: brand.$spacing-4;
+  border-bottom: 1px solid brand.$border-color;
+}
+
+.classroom-notes-panel__filter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 brand.$spacing-3;
+  border: 1px solid brand.$border-color;
+  border-radius: 999px;
+  background: brand.$color-white;
+  color: brand.$text-color-muted;
+  font-size: brand.$font-size-caption;
+  font-weight: brand.$font-weight-label;
+  cursor: pointer;
+  transition: border-color 120ms ease-out, background-color 120ms ease-out;
+
+  &:hover {
+    border-color: brand.$color-bark;
+  }
+
+  &:focus-visible {
+    outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+    outline-offset: 2px;
+  }
+}
+
+.classroom-notes-panel__filter--dot {
+  width: 28px;
+  padding: 0;
+}
+
+.classroom-notes-panel__filter--on {
+  border-color: brand.$text-color;
+  background: brand.$color-linen;
+  color: brand.$text-color;
+}
+
+.classroom-notes-panel__dot {
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+}
+
+.classroom-notes-panel__status {
+  margin: 0 0 brand.$spacing-3;
   color: brand.$text-color-muted;
   font-size: brand.$font-size-caption;
 }
@@ -2842,93 +3341,475 @@ $classroom-note-pink: rgba(240, 98, 146, 0.32);
 .classroom-notes-panel__list {
   display: flex;
   flex-direction: column;
-  gap: brand.$spacing-3;
+  gap: brand.$spacing-2;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-// Each note is a card: the words it marks, in a quote with a bar in the highlight's own colour
-// down its side, then what the student wrote, then what can be done with it. The quote is
-// capped at three lines because a long passage would otherwise push every other note off the
-// screen; "Go to line" shows the rest in the text.
 .classroom-notes-panel__item {
-  padding: brand.$spacing-4;
+  position: relative;
+}
+
+// The whole card is the way to the line: a soft lift on hover says so.
+.classroom-notes-panel__card {
+  display: flex;
+  flex-direction: column;
+  gap: brand.$spacing-2;
+  width: 100%;
+  padding: brand.$spacing-3 brand.$spacing-8 brand.$spacing-3 brand.$spacing-4;
+  border: 1px solid brand.$border-color;
+  border-radius: 12px;
+  background: brand.$color-white;
+  color: brand.$text-color;
+  font: inherit;
+  text-align: left;
+  transition: border-color 120ms ease-out, box-shadow 120ms ease-out;
+}
+
+button.classroom-notes-panel__card {
+  cursor: pointer;
+
+  &:hover {
+    border-color: rgba(brand.$color-bark, 0.5);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  }
+
+  &:focus-visible {
+    outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+    outline-offset: 2px;
+  }
+}
+
+// The words: quiet, in the muted colour, with a slim bar in the highlight's colour beside them
+// (a full highlight block on every card was heavy), cut off after two lines.
+.classroom-notes-panel__quote {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  padding-left: brand.$spacing-3;
+  border-left: 3px solid brand.$border-color;
+  color: brand.$text-color-muted;
+  font-size: brand.$font-size-caption;
+  line-height: 1.6;
+
+  &[lang="bo"] {
+    font-family: brand.$font-family-course-content;
+    font-size: 0.9375rem;
+    // Tibetan stacks reach well below the line: room for them, so the third line's tops do not
+    // peek in under the cut.
+    line-height: 1.9;
+  }
+}
+
+.classroom-notes-panel__quote--yellow { border-left-color: #e0b200; }
+.classroom-notes-panel__quote--green { border-left-color: #4caf50; }
+.classroom-notes-panel__quote--blue { border-left-color: #42a5f5; }
+.classroom-notes-panel__quote--pink { border-left-color: #f06292; }
+
+// What was written, at reading size, cut off after four lines.
+.classroom-notes-panel__body {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  color: brand.$text-color;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.classroom-notes-panel__lost {
+  align-self: flex-start;
+  padding: 2px brand.$spacing-2;
+  border-radius: 6px;
+  background: $classroom-note-yellow;
+  color: brand.$text-color;
+  font-size: 0.75rem;
+}
+
+.classroom-notes-panel__item--lost .classroom-notes-panel__card {
+  border-style: dashed;
+}
+
+// The pen in the card's top corner: open the note to change it.
+.classroom-notes-panel__edit {
+  position: absolute;
+  top: brand.$spacing-2;
+  right: brand.$spacing-2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: brand.$text-color-muted;
+  cursor: pointer;
+  transition: background-color 120ms ease-out, color 120ms ease-out;
+
+  &:hover {
+    background: brand.$color-linen;
+    color: brand.$text-color;
+  }
+
+  &:focus-visible {
+    outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+    outline-offset: 1px;
+  }
+}
+
+// The dictionary panel. Top to bottom: the words, large; a small button for which dictionaries
+// are searched (opening a row of on/off chips); then the meanings, a card per dictionary.
+.classroom-dictionary__body {
+  display: flex;
+  flex-direction: column;
+  padding-top: brand.$spacing-6;
+}
+
+// The words looked up, as they are written in the text, with nothing boxed around them.
+.classroom-dictionary__query {
+  margin: 0 0 brand.$spacing-3;
+  color: brand.$text-color;
+  font-family: brand.$font-family-course-content;
+  font-size: 1.75rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.classroom-dictionary__tools {
+  display: flex;
+  align-items: center;
+  margin: 0 0 brand.$spacing-4;
+  padding-bottom: brand.$spacing-4;
+  border-bottom: 1px solid brand.$border-color;
+}
+
+// A quiet pill: which dictionaries, and how many of them.
+.classroom-dictionary__picker-toggle {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  height: 32px;
+  padding: 0 brand.$spacing-3;
+  border: 1px solid brand.$border-color;
+  border-radius: 999px;
+  background: brand.$color-white;
+  color: brand.$text-color;
+  font-size: brand.$font-size-caption;
+  font-weight: brand.$font-weight-label;
+  cursor: pointer;
+  transition: background-color 120ms ease-out;
+
+  svg {
+    flex: none;
+    color: brand.$text-color-muted;
+  }
+
+  &:hover {
+    background: brand.$color-linen;
+  }
+
+  &:focus-visible {
+    outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+    outline-offset: 2px;
+  }
+
+  &[aria-expanded="true"] .classroom-dictionary__chevron {
+    transform: rotate(180deg);
+  }
+}
+
+.classroom-dictionary__chevron {
+  display: inline-flex;
+  flex: none;
+  color: brand.$text-color-muted;
+  transition: transform 150ms ease-out;
+}
+
+// The dictionaries as chips: filled when on, outlined when off.
+.classroom-dictionary__picker {
+  margin: (-(brand.$spacing-2)) 0 brand.$spacing-4;
+  padding: brand.$spacing-3;
+  border-radius: 12px;
+  background: mix(brand.$color-linen, #fff, 55%);
+}
+
+.classroom-dictionary__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.classroom-dictionary__chip {
+  height: 30px;
+  padding: 0 brand.$spacing-3;
+  border: 1px solid brand.$border-color;
+  border-radius: 999px;
+  background: brand.$color-white;
+  color: brand.$text-color-muted;
+  font-size: brand.$font-size-caption;
+  cursor: pointer;
+  transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
+
+  &:hover:not(:disabled) {
+    border-color: brand.$color-bark;
+    color: brand.$text-color;
+  }
+
+  &:focus-visible {
+    outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.classroom-dictionary__chip--on {
+  border-color: brand.$primary;
+  background: brand.$primary;
+  color: brand.$color-white;
+
+  &:hover:not(:disabled) {
+    border-color: brand.$primary;
+    color: brand.$color-white;
+    opacity: 0.9;
+  }
+}
+
+// A text button: reset the chips, or open them from the "no match" message.
+.classroom-dictionary__reset {
+  margin-top: brand.$spacing-3;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: brand.$primary;
+  font-size: brand.$font-size-caption;
+  font-weight: brand.$font-weight-label;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.classroom-dictionary__results {
+  flex: 1 0 auto;
+}
+
+.classroom-dictionary__split {
+  margin: 0 0 brand.$spacing-3;
+  color: brand.$text-color-muted;
+  font-size: brand.$font-size-caption;
+}
+
+.classroom-dictionary__word + .classroom-dictionary__word {
+  margin-top: brand.$spacing-6;
+}
+
+// In a phrase shown word by word: each word, as a heading over its cards.
+.classroom-dictionary__term {
+  margin: 0 0 brand.$spacing-2;
+  font-family: brand.$font-family-course-content;
+  font-size: 1.25rem;
+  line-height: 1.6;
+}
+
+.classroom-dictionary__missing {
+  margin: 0;
+  color: brand.$text-color-muted;
+  font-size: brand.$font-size-caption;
+}
+
+// Over the cards: what they are.
+.classroom-dictionary__from {
+  margin: 0 0 brand.$spacing-2;
+  color: brand.$text-color-muted;
+  font-size: brand.$font-size-caption;
+}
+
+// One dictionary's meaning: the meaning itself, under the dictionary's name as a small label.
+.classroom-dictionary__entry {
+  margin: 0 0 brand.$spacing-2;
+  padding: brand.$spacing-3 brand.$spacing-4;
   border: 1px solid brand.$border-color;
   border-radius: 12px;
   background: brand.$color-white;
 }
 
-.classroom-notes-panel .classroom-notes-panel__quote {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  margin: 0 0 brand.$spacing-3;
-  padding: brand.$spacing-1 0 brand.$spacing-1 brand.$spacing-3;
-  border-left: 4px solid brand.$color-sand;
-  border-radius: 0;
-  background: transparent;
-  font-size: brand.$font-size-caption;
-  line-height: 1.7;
-
-  &.classroom-note--yellow { border-left-color: #e0b200; }
-  &.classroom-note--green { border-left-color: #4caf50; }
-  &.classroom-note--blue { border-left-color: #42a5f5; }
-  &.classroom-note--pink { border-left-color: #f06292; }
-}
-
-.classroom-notes-panel__body {
-  margin: 0 0 brand.$spacing-3;
-  color: brand.$text-color;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.classroom-notes-panel__actions {
+.classroom-dictionary__source {
   display: flex;
   gap: brand.$spacing-2;
-  margin: 0 (-(brand.$spacing-2)) (-(brand.$spacing-2));
-  padding-top: brand.$spacing-2;
-  border-top: 1px solid brand.$border-color;
+  align-items: center;
+  margin: 0 0 brand.$spacing-1;
 }
 
-// Quiet text buttons in the brand's brown, with a warm tint on hover. Nested to outweigh
-// Paragon's `!important` tertiary rules.
-.classroom-notes-panel .classroom-notes-panel__action {
-  min-height: 0 !important;
-  padding: brand.$spacing-2 brand.$spacing-3 !important;
-  border-radius: 8px;
-  background: transparent !important;
-  color: brand.$primary !important;
+.classroom-dictionary__name {
+  color: brand.$text-color-muted;
+  font-size: 0.6875rem;
+  font-weight: brand.$font-weight-label;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.classroom-dictionary__count {
+  padding: 0 brand.$spacing-2;
+  border-radius: 999px;
+  background: brand.$color-linen;
+  color: brand.$text-color-muted;
+  font-size: 0.6875rem;
+}
+
+// A long meaning is cut to a few lines until "Show more" is pressed.
+.classroom-dictionary__entry--short .classroom-dictionary__definition {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.classroom-dictionary__more {
+  display: inline-flex;
+  gap: brand.$spacing-1;
+  align-items: center;
+  margin-top: brand.$spacing-1;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: brand.$primary;
   font-size: brand.$font-size-caption;
   font-weight: brand.$font-weight-label;
+  cursor: pointer;
 
-  &:hover:not(:disabled),
-  &:focus-visible {
-    background: brand.$color-linen !important;
+  .classroom-dictionary__chevron {
+    color: inherit;
   }
 
-  &:disabled {
-    opacity: 0.4;
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    border-radius: 4px;
+    outline: brand.$focus-ring-width solid brand.$focus-ring-color;
+    outline-offset: 2px;
+  }
+
+  &[aria-expanded="true"] .classroom-dictionary__chevron {
+    transform: rotate(180deg);
   }
 }
 
-.classroom-notes-panel .classroom-notes-panel__close {
-  height: 40px !important;
-  padding: 0 brand.$spacing-4 !important;
-  border: 1px solid brand.$border-color !important;
-  border-radius: 10px;
-  background: brand.$color-white !important;
-  color: brand.$text-color !important;
-  font-size: brand.$font-size-caption;
-  font-weight: brand.$font-weight-label;
+.classroom-dictionary__definition {
+  margin: 0;
+  padding: brand.$spacing-1 0;
+  color: brand.$text-color;
+  line-height: 1.6;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
 
-  &:hover,
-  &:focus-visible {
-    border-color: brand.$color-bark !important;
-    background: brand.$color-linen !important;
+  & + & {
+    border-top: 1px dashed brand.$border-color;
   }
+
+  &[lang="bo"] {
+    font-family: brand.$font-family-course-content;
+    line-height: 1.8;
+  }
+}
+
+// Placeholder cards while the dictionaries are asked.
+.classroom-dictionary__skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: brand.$spacing-2;
+  margin: 0 0 brand.$spacing-2;
+  padding: brand.$spacing-4;
+  border: 1px solid brand.$border-color;
+  border-radius: 12px;
+}
+
+.classroom-dictionary__bone {
+  display: block;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, brand.$color-linen 25%, mix(brand.$color-linen, #fff, 40%) 50%, brand.$color-linen 75%);
+  background-size: 200% 100%;
+  animation: classroom-dictionary-shimmer 1.2s ease-in-out infinite;
+}
+
+.classroom-dictionary__bone--title {
+  width: 40%;
+  height: 12px;
+}
+
+.classroom-dictionary__bone--short {
+  width: 65%;
+}
+
+@keyframes classroom-dictionary-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .classroom-dictionary__bone {
+    animation: none;
+  }
+}
+
+// No match, or the dictionary could not be reached: a calm, centred message.
+.classroom-dictionary__notice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: brand.$spacing-6 brand.$spacing-4;
+  border: 1px dashed brand.$border-color;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.classroom-dictionary__notice-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: brand.$spacing-3;
+  border-radius: 50%;
+  background: brand.$color-linen;
+  color: brand.$text-color-muted;
+}
+
+.classroom-dictionary__notice-title {
+  margin: 0 0 brand.$spacing-1;
+  color: brand.$text-color;
+  font-weight: brand.$font-weight-label;
+}
+
+.classroom-dictionary__notice-body {
+  margin: 0 0 brand.$spacing-3;
+  color: brand.$text-color-muted;
+  font-size: brand.$font-size-caption;
+  line-height: 1.5;
+}
+
+.classroom-dictionary__notice .classroom-dictionary__reset {
+  margin-top: 0;
+}
+
+.classroom-dictionary__credit {
+  margin: brand.$spacing-6 0 0;
+  color: brand.$text-color-muted;
+  font-size: 0.75rem;
+  text-align: center;
 }
 
 // Structural kinds, as the **library** reports them. Affect spacing and emphasis
@@ -3182,4 +4063,15 @@ $classroom-note-pink: rgba(240, 98, 146, 0.32);
 .classroom-classes__dates {
   color: brand.$color-deep-brown;
   font-weight: brand.$font-weight-label;
+}
+
+// On a note whose side of the text is hidden: why it is not on the page. Going to it shows it.
+.classroom-notes-panel__hidden {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 2px brand.$spacing-2;
+  border: 1px solid brand.$border-color;
+  border-radius: 6px;
+  color: brand.$text-color-muted;
+  font-size: 0.75rem;
 }
