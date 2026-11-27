@@ -1374,7 +1374,29 @@
             .pgn__card-wrapper-image-cap.horizontal {
                 min-width: 240px;
                 max-width: 240px;
+                display: block;
+                width: 100%;
+                min-width: 0;
+                max-width: 100%;
                 min-height: 0;
+                aspect-ratio: 16 / 9;
+
+                .pgn__card-image-cap {
+                    object-fit: cover !important;
+                }
+
+                &.is-fallback,
+                &:has(img[src*="/logo."]),
+                &:has(img[src*="/logo-"]),
+                &:has(img[src*="/images/logo"]),
+                &:has(img[src*="/theming/"]) {
+                    min-height: 0;
+                    max-height: none;
+
+                    .pgn__card-image-cap {
+                        object-fit: contain !important;
+                    }
+                }
             }
 
             .pgn__card-header {
